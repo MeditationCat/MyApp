@@ -19,12 +19,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+import android.view.WindowManager;
 
+
+import com.abilix.myapp.utils.ToastUtil;
 
 import butterknife.ButterKnife;
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by pp.tai on 17:22 2018/04/09.
@@ -32,14 +32,14 @@ import rx.subscriptions.CompositeSubscription;
 
 public abstract class BaseActivity extends Activity {
 
-    protected CompositeSubscription mCompositeSubscription;
-    protected Toast mToast;
+    //protected CompositeSubscription mCompositeSubscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         ButterKnife.bind(this);
 
         initData();
@@ -69,7 +69,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unSubscribe();
+        //unSubscribe();
     }
 
     @Override
@@ -122,23 +122,11 @@ public abstract class BaseActivity extends Activity {
      * @param text text to display
      */
     protected void showShortToast(String text) {
-        if (mToast == null) {
-            mToast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
-        } else {
-            mToast.setText(text);
-            mToast.setDuration(Toast.LENGTH_SHORT);
-        }
-        mToast.show();
+        ToastUtil.showShort(this, text);
     }
 
     protected void showShortToast(int resId) {
-        if (mToast == null) {
-            mToast = Toast.makeText(this, resId, Toast.LENGTH_SHORT);
-        } else {
-            mToast.setText(resId);
-            mToast.setDuration(Toast.LENGTH_SHORT);
-        }
-        mToast.show();
+        ToastUtil.showShort(this, resId);
     }
 
     /**
@@ -146,25 +134,14 @@ public abstract class BaseActivity extends Activity {
      * @param text text to display
      */
     protected void showLongToast(String text) {
-        if (mToast == null) {
-            mToast = Toast.makeText(this, text, Toast.LENGTH_LONG);
-        } else {
-            mToast.setText(text);
-            mToast.setDuration(Toast.LENGTH_LONG);
-        }
-        mToast.show();
+        ToastUtil.showLong(this, text);
     }
 
     protected void showLongToast(int resId) {
-        if (mToast == null) {
-            mToast = Toast.makeText(this, resId, Toast.LENGTH_LONG);
-        } else {
-            mToast.setText(resId);
-            mToast.setDuration(Toast.LENGTH_LONG);
-        }
-        mToast.show();
+        ToastUtil.showLong(this, resId);
     }
 
+/*
     protected void subscribe(Subscription subscription) {
         if (mCompositeSubscription == null) {
             mCompositeSubscription = new CompositeSubscription();
@@ -177,4 +154,5 @@ public abstract class BaseActivity extends Activity {
             mCompositeSubscription.unsubscribe();
         }
     }
+*/
 }
