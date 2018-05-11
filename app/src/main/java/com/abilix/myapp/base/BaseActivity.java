@@ -25,6 +25,8 @@ import android.view.WindowManager;
 import com.abilix.myapp.utils.ToastUtil;
 
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by pp.tai on 17:22 2018/04/09.
@@ -32,7 +34,7 @@ import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends Activity {
 
-    //protected CompositeSubscription mCompositeSubscription;
+    protected CompositeDisposable mDisposables;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unSubscribe();
+        unSubscribe();
     }
 
     @Override
@@ -141,18 +143,17 @@ public abstract class BaseActivity extends Activity {
         ToastUtil.showLong(this, resId);
     }
 
-/*
-    protected void subscribe(Subscription subscription) {
-        if (mCompositeSubscription == null) {
-            mCompositeSubscription = new CompositeSubscription();
+    protected void addSubscribe(Disposable d) {
+        if (mDisposables == null) {
+            mDisposables = new CompositeDisposable();
         }
-        mCompositeSubscription.add(subscription);
+        mDisposables.add(d);
     }
 
     protected void unSubscribe() {
-        if (mCompositeSubscription != null) {
-            mCompositeSubscription.unsubscribe();
+        if (mDisposables != null) {
+            mDisposables.clear();
         }
     }
-*/
+
 }

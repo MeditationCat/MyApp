@@ -15,16 +15,19 @@
 
 package com.abilix.myapp.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by pp.tai on 13:26 2018/05/02.
  */
 
-public class BaseResponse {
+public class BaseResponse<T> implements Serializable{
 
     private String code;
     private boolean success;
     private String requestTime;
     private String message;
+    private T result;
 
     public String getCode() {
         return code;

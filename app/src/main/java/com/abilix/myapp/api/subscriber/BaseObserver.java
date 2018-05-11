@@ -17,11 +17,31 @@ package com.abilix.myapp.api.subscriber;
 
 import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.exception.ExceptionEngine;
+import com.abilix.myapp.bean.BaseResponse;
 
 import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 
-public abstract class BaseObserver<T> implements Observer<T> {
+public abstract class BaseObserver<T> implements Observer<BaseResponse<T>> {
+
+    public BaseObserver() {
+    }
+
+    @Override
+    public void onSubscribe(Disposable d) {
+
+    }
+
+    @Override
+    public void onNext(BaseResponse<T> tBaseResponse) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
 
     @Override
     public void onError(Throwable e) {

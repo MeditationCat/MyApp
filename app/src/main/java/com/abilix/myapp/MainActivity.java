@@ -34,8 +34,6 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 
@@ -85,6 +83,7 @@ public class MainActivity extends BaseActivity {
                 .subscribe(new BaseObserver<MovieInfo>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        addSubscribe(d);
                         Logger.d("onSubscribe: %b", d.isDisposed());
                     }
 
@@ -98,12 +97,6 @@ public class MainActivity extends BaseActivity {
                         }
                         final TextView textView = findViewById(R.id.sample_text);
                         textView.setText(movieInfo.getTitle());
-                                /*textView.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        textView.setText(movieInfo.getTitle());
-                                    }
-                                });*/
                     }
 
                     @Override
@@ -116,7 +109,7 @@ public class MainActivity extends BaseActivity {
                         Logger.d("onError: %s", e.getMessage());
                     }
                 });
-        //subscribe(subscription);
+
     }
 
     @Override
