@@ -23,34 +23,16 @@ import java.io.Serializable;
 
 public class BaseResponse<T> implements Serializable{
 
-    private String code;
-    private boolean success;
-    private String requestTime;
+    private int code;
     private String message;
-    private T result;
+    private T data;
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getRequestTime() {
-        return requestTime;
-    }
-
-    public void setRequestTime(String requestTime) {
-        this.requestTime = requestTime;
     }
 
     public String getMessage() {
@@ -59,5 +41,18 @@ public class BaseResponse<T> implements Serializable{
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseResponse:{code:" + code + ",message:" + message + ",data:" + data;
     }
 }

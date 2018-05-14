@@ -25,29 +25,47 @@ import io.reactivex.disposables.Disposable;
 
 public abstract class BaseObserver<T> implements Observer<BaseResponse<T>> {
 
+    private final int RESPONSE_CODE_OK = 0;
+    private Disposable mDisposable;
     public BaseObserver() {
     }
 
     @Override
     public void onSubscribe(Disposable d) {
-
+        mDisposable = d;
     }
 
     @Override
     public void onNext(BaseResponse<T> tBaseResponse) {
-
+        switch (tBaseResponse.getCode()) {
+            case RESPONSE_CODE_OK:
+                onSuccess(tBaseResponse.getData());
+                break;
+            default:
+                onFailure(tBaseResponse.getCode(), tBaseResponse.getMessage());
+                break;
+        }
     }
 
     @Override
     public void onComplete() {
-
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
     }
 
     @Override
     public void onError(Throwable e) {
+        if (mDisposable != null) {
+            mDisposable.dispose();
+        }
         ApiException apiException = ExceptionEngine.handleException(e);
         onError(apiException);
     }
 
     protected abstract void onError(ApiException e);
+
+    protected abstract void onSuccess(T t);
+
+    protected abstract void onFailure(int code, String message);
 }
