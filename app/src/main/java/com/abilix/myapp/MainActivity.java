@@ -79,7 +79,29 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-        Api.getInstance().getMovieList(0, 2)
+
+        subScribe(Api.getInstance().getMovieList(0, 2), new BaseObserver<MovieInfo>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Logger.d("onSubscribe: %b", d.isDisposed());
+            }
+
+            @Override
+            public void onNext(MovieInfo movieInfo) {
+                Logger.d("onNext: %s",movieInfo.getTitle());
+            }
+
+            @Override
+            public void onComplete() {
+                Logger.d("onComplete:");
+            }
+
+            @Override
+            public void onError(ApiException e) {
+                Logger.d("onError: %s", e.getMessage());
+            }
+        });
+        /*Api.getInstance().getMovieList(0, 2)
                 .subscribe(new BaseObserver<MovieInfo>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -105,11 +127,10 @@ public class MainActivity extends BaseActivity {
                     }
 
                     @Override
-                    protected void onError(ApiException e) {
+                    public void onError(ApiException e) {
                         Logger.d("onError: %s", e.getMessage());
                     }
-                });
-
+                });*/
     }
 
     @Override

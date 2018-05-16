@@ -15,9 +15,11 @@
 
 package com.abilix.myapp.api;
 
-import com.abilix.myapp.MyApp;
+import android.content.Context;
+
 import com.abilix.myapp.api.service.ApiService;
-import com.abilix.myapp.bean.BaseResponse;
+import com.abilix.myapp.base.BaseView;
+import com.abilix.myapp.bean.BaseEntity;
 import com.abilix.myapp.bean.MovieInfo;
 import com.abilix.myapp.bean.TokenInfo;
 import com.abilix.myapp.bean.UserInfo;
@@ -30,9 +32,11 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -109,7 +113,7 @@ public class Api {
     }
 
 
-    public Observable<MovieInfo> getMovieList(int start, int count) {
+    public Observable<BaseEntity> getMovieList(int start, int count) {
         if (apiService != null) {
             return apiService.getMovieList(start, count)
                     .subscribeOn(Schedulers.io())
@@ -152,7 +156,7 @@ public class Api {
      * @param captcha
      * @return
      */
-    public Observable<BaseResponse> register(String Authorization, String phoneNumber, String password, String captcha) {
+    public Observable<BaseEntity> register(String Authorization, String phoneNumber, String password, String captcha) {
         if (apiService != null) {
             return apiService.register(Authorization, phoneNumber, password, captcha)
                     .subscribeOn(Schedulers.io())
@@ -170,7 +174,7 @@ public class Api {
      * @param captcha
      * @return
      */
-    public Observable<BaseResponse> forgetPwd(String Authorization, String phoneNumber, String password, String captcha) {
+    public Observable<BaseEntity> forgetPwd(String Authorization, String phoneNumber, String password, String captcha) {
         if (apiService != null) {
             return apiService.forgetPwd(Authorization, phoneNumber, password, captcha)
                     .subscribeOn(Schedulers.io())

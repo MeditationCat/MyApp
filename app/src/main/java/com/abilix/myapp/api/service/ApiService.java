@@ -15,7 +15,7 @@
 
 package com.abilix.myapp.api.service;
 
-import com.abilix.myapp.bean.BaseResponse;
+import com.abilix.myapp.bean.BaseEntity;
 import com.abilix.myapp.bean.MovieInfo;
 import com.abilix.myapp.bean.TokenInfo;
 import com.abilix.myapp.bean.UserInfo;
@@ -42,8 +42,8 @@ public interface ApiService {
      * @return
      */
     @GET("top250")
-    Observable<MovieInfo> getMovieList(@Query("start") int start,
-                                       @Query("count") int count);
+    Observable<BaseEntity> getMovieList(@Query("start") int start,
+                                                   @Query("count") int count);
 
     /**
      * get token
@@ -84,10 +84,10 @@ public interface ApiService {
     @Headers("Content-Type:application/x-www-form-urlencoded;charset=utf-8")
     @FormUrlEncoded
     @POST("/rest/v2/chinagrandauto/users")
-    Observable<BaseResponse> register(@Header("Authorization") String Authorization,
-                                      @Field("phoneNumber") String phoneNumber,
-                                      @Field("password") String password,
-                                      @Field("captcha") String captcha);
+    Observable<BaseEntity> register(@Header("Authorization") String Authorization,
+                                    @Field("phoneNumber") String phoneNumber,
+                                    @Field("password") String password,
+                                    @Field("captcha") String captcha);
 
     /**
      * forget password
@@ -100,10 +100,10 @@ public interface ApiService {
     @Headers("Content-Type:application/x-www-form-urlencoded;charset=utf-8")
     @FormUrlEncoded
     @POST("/rest/v2/chinagrandauto/users/current/forgottenpassword")
-    Observable<BaseResponse> forgetPwd(@Header("Authorization") String Authorization,
-                                       @Field("phoneNumber") String phoneNumber,
-                                       @Field("newPassword") String password,
-                                       @Field("captcha") String captcha);
+    Observable<BaseEntity> forgetPwd(@Header("Authorization") String Authorization,
+                                     @Field("phoneNumber") String phoneNumber,
+                                     @Field("newPassword") String password,
+                                     @Field("captcha") String captcha);
 
     /**
      * login

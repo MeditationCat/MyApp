@@ -15,17 +15,21 @@
 
 package com.abilix.myapp.bean;
 
-import java.io.Serializable;
-
 /**
  * Created by pp.tai on 13:26 2018/05/02.
  */
 
-public class BaseResponse<T> implements Serializable{
+public class BaseEntity<T> {
+
+    private final static int RESPONSE_CODE_SUCCESS = 0;
 
     private int code;
     private String message;
     private T data;
+
+    public boolean isSuccess() {
+        return code == RESPONSE_CODE_SUCCESS;
+    }
 
     public int getCode() {
         return code;
@@ -53,6 +57,6 @@ public class BaseResponse<T> implements Serializable{
 
     @Override
     public String toString() {
-        return "BaseResponse:{code:" + code + ",message:" + message + ",data:" + data;
+        return "BaseEntity:{code:" + code + ",message:" + message + ",data:" + data + "}";
     }
 }

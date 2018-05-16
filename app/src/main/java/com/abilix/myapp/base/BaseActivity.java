@@ -22,9 +22,16 @@ import android.support.annotation.Nullable;
 import android.view.WindowManager;
 
 
+import com.abilix.myapp.api.exception.ApiException;
+import com.abilix.myapp.api.exception.ExceptionEngine;
+import com.abilix.myapp.api.subscriber.BaseObserver;
+import com.abilix.myapp.bean.BaseEntity;
 import com.abilix.myapp.utils.ToastUtil;
 
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -91,13 +98,15 @@ public abstract class BaseActivity extends Activity {
 
     /**
      * get layout id
+     *
      * @return layout Id
      */
     protected abstract int getLayoutId();
 
     /**
      * Start Activity with Bundle
-     * @param cls class
+     *
+     * @param cls    class
      * @param bundle bundle
      */
     protected void startActivity(Class<?> cls, Bundle bundle) {
@@ -111,6 +120,7 @@ public abstract class BaseActivity extends Activity {
 
     /**
      * Start Activity without bundle
+     *
      * @param cls class
      */
     protected void startActivity(Class<?> cls) {
@@ -121,6 +131,7 @@ public abstract class BaseActivity extends Activity {
 
     /**
      * show short toast
+     *
      * @param text text to display
      */
     protected void showShortToast(String text) {
@@ -133,6 +144,7 @@ public abstract class BaseActivity extends Activity {
 
     /**
      * show long toast
+     *
      * @param text text to display
      */
     protected void showLongToast(String text) {
@@ -156,4 +168,34 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    protected void subScribe(@NonNull Observable<BaseEntity> observable, @NonNull final BaseObserver baseObserver) {
+        observable.subscribe(new Observer<BaseEntity>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                addSubscribe(d);
+                baseObserver.onSubscribe(d);
+            }
+
+            @Override
+            public void onNext(BaseEntity baseEntity) {
+                if (baseEntity.isSuccess()) {
+                    baseObserver.onNext(baseEntity.getData());
+                } else {
+                    onError(new Throwable(baseEntity.getMessage()));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ApiException apiException = ExceptionEngine.handleException(e);
+                baseObserver.onError(apiException);
+            }
+
+            @Override
+            public void onComplete() {
+                baseObserver.onComplete();
+            }
+        });
+    }
 }
