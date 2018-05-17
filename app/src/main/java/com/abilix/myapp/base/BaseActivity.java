@@ -15,10 +15,10 @@
 
 package com.abilix.myapp.base;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
 
 
@@ -27,6 +27,7 @@ import com.abilix.myapp.api.exception.ExceptionEngine;
 import com.abilix.myapp.api.subscriber.BaseObserver;
 import com.abilix.myapp.bean.BaseEntity;
 import com.abilix.myapp.utils.ToastUtil;
+import com.orhanobut.logger.Logger;
 
 import butterknife.ButterKnife;
 import io.reactivex.Observable;
@@ -39,7 +40,7 @@ import io.reactivex.disposables.Disposable;
  * Created by pp.tai on 17:22 2018/04/09.
  */
 
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends FragmentActivity {
 
     protected CompositeDisposable mDisposables;
 
@@ -129,33 +130,7 @@ public abstract class BaseActivity extends Activity {
         startActivity(intent);
     }
 
-    /**
-     * show short toast
-     *
-     * @param text text to display
-     */
-    protected void showShortToast(String text) {
-        ToastUtil.showShort(this, text);
-    }
-
-    protected void showShortToast(int resId) {
-        ToastUtil.showShort(this, resId);
-    }
-
-    /**
-     * show long toast
-     *
-     * @param text text to display
-     */
-    protected void showLongToast(String text) {
-        ToastUtil.showLong(this, text);
-    }
-
-    protected void showLongToast(int resId) {
-        ToastUtil.showLong(this, resId);
-    }
-
-    protected void addSubscribe(Disposable d) {
+    public void addSubscribe(Disposable d) {
         if (mDisposables == null) {
             mDisposables = new CompositeDisposable();
         }
@@ -168,6 +143,9 @@ public abstract class BaseActivity extends Activity {
         }
     }
 
+    //@SuppressWarnings("unchecked")
+   //
+
     @SuppressWarnings("unchecked")
     protected void subScribe(@NonNull Observable<BaseEntity> observable, @NonNull final BaseObserver baseObserver) {
         observable.subscribe(new Observer<BaseEntity>() {
@@ -179,15 +157,17 @@ public abstract class BaseActivity extends Activity {
 
             @Override
             public void onNext(BaseEntity baseEntity) {
+                Logger.d("onNext===" + baseEntity.toString());
                 if (baseEntity.isSuccess()) {
                     baseObserver.onNext(baseEntity.getData());
                 } else {
-                    onError(new Throwable(baseEntity.getMessage()));
+                    onError(new Throwable(baseEntity.getMsg()));
                 }
             }
 
             @Override
             public void onError(Throwable e) {
+                Logger.d("onError===" + e.getMessage());
                 ApiException apiException = ExceptionEngine.handleException(e);
                 baseObserver.onError(apiException);
             }

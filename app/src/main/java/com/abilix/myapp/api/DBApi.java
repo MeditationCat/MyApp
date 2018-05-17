@@ -15,10 +15,8 @@
 
 package com.abilix.myapp.api;
 
-import com.abilix.myapp.api.service.ApiService;
-import com.abilix.myapp.bean.BaseEntity;
-import com.abilix.myapp.bean.UserInfo;
-import com.abilix.myapp.bean.douban.TokenInfo;
+import com.abilix.myapp.api.service.DBService;
+import com.abilix.myapp.bean.douban.MovieInfo;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +38,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class Api {
+public class DBApi {
 
     public static final String BASE_URL = "https://api.douban.com";
     public static final HttpUrl HTTP_URL = HttpUrl.parse(BASE_URL);
@@ -50,9 +48,9 @@ public class Api {
     public static final int WRITE_TIMEOUT = 60; // seconds
 
 
-    private static ApiService apiService;
-    private static Api instance;
-    private Api() {
+    private static DBService apiService;
+    private static DBApi instance;
+    private DBApi() {
         OkHttpClient client = new OkHttpClient.Builder()
                 //.cache(new Cache(app.getCacheDir, CACHE_SIZE))
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)
@@ -93,117 +91,33 @@ public class Api {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-        apiService = retrofit.create(ApiService.class);
+        apiService = retrofit.create(DBService.class);
     }
 
-    public static Api getInstance() {
+    public static DBApi getInstance() {
         if (instance == null) {
-            synchronized (Api.class) {
-                instance = new Api();
+            synchronized (DBApi.class) {
+                instance = new DBApi();
             }
         }
         return instance;
     }
 
-
-    public Observable<BaseEntity> getMovieList(int start, int count) {
+    /**
+     * get movie top250
+     *
+     * @param start 开始索引
+     * @param count 索引个数
+     * @return MovieInfo
+     */
+    public Observable<MovieInfo> getMovieTop250(int start, int count) {
         if (apiService != null) {
-            return apiService.getMovieList(start, count)
+            return apiService.getMovieTop250(start, count)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
         }
         return null;
     }
 
-
-    /**
-     * get token
-     * @return
-     */
-    public Observable<TokenInfo> getToken() {
-        if (apiService != null) {
-            return apiService.getHttpToken("secret", "mobile_android", "client_credentials");
-        }
-        return null;
-    }
-
-    /**
-     * refresh token
-     * @param refresh_token
-     * @return
-     */
-    public Observable<TokenInfo> refershToken(String refresh_token) {
-        if (apiService != null) {
-            return apiService.refreshToken(refresh_token, "secret", BASE_URL + "/oauth2_callback", "mobile_android", "refresh_token")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-        return null;
-    }
-
-    /**
-     * register
-     * @param Authorization
-     * @param phoneNumber
-     * @param password
-     * @param captcha
-     * @return
-     */
-    public Observable<BaseEntity> register(String Authorization, String phoneNumber, String password, String captcha) {
-        if (apiService != null) {
-            return apiService.register(Authorization, phoneNumber, password, captcha)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-        return null;
-    }
-
-    /**
-     * forget password
-     * @param Authorization
-     * @param phoneNumber
-     * @param password
-     * @param captcha
-     * @return
-     */
-    public Observable<BaseEntity> forgetPwd(String Authorization, String phoneNumber, String password, String captcha) {
-        if (apiService != null) {
-            return apiService.forgetPwd(Authorization, phoneNumber, password, captcha)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-        return null;
-    }
-
-    /**
-     * login
-     * @param username
-     * @param password
-     * @return
-     */
-    public Observable<TokenInfo> login(String username, String password) {
-        if (apiService != null) {
-            return apiService.login(username, password, "password", "secret", "mobile_android")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-        return null;
-    }
-
-    /**
-     * get user info
-     * @param Authorization
-     * @return
-     */
-    public Observable<UserInfo> getUserInfo(String Authorization) {
-        if (apiService != null) {
-            return apiService.getUserInfo(Authorization)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-        }
-        return null;
-    }
 
 }

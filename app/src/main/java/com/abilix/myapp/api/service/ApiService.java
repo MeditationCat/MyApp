@@ -16,9 +16,8 @@
 package com.abilix.myapp.api.service;
 
 import com.abilix.myapp.bean.BaseEntity;
-import com.abilix.myapp.bean.MovieInfo;
-import com.abilix.myapp.bean.TokenInfo;
 import com.abilix.myapp.bean.UserInfo;
+import com.abilix.myapp.bean.douban.TokenInfo;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;

@@ -13,13 +13,9 @@
  * limitations under the License.
  */
 
-package com.abilix.myapp.api.service;
+package com.abilix.myapp.base;
 
-/**
- * Created by pp.tai on 14:06 2018/05/02.
- */
+import android.support.v4.app.Fragment;
 
-public interface GitHubService {
-
-
+public abstract class BaseFragment extends Fragment {
 }

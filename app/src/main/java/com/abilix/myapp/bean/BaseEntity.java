@@ -24,7 +24,7 @@ public class BaseEntity<T> {
     private final static int RESPONSE_CODE_SUCCESS = 0;
 
     private int code;
-    private String message;
+    private String msg;
     private T data;
 
     public boolean isSuccess() {
@@ -39,12 +39,12 @@ public class BaseEntity<T> {
         this.code = code;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     public T getData() {
@@ -57,6 +57,6 @@ public class BaseEntity<T> {
 
     @Override
     public String toString() {
-        return "BaseEntity:{code:" + code + ",message:" + message + ",data:" + data + "}";
+        return "BaseEntity:{code:" + code + ",msg:" + msg + ",data:" + data + "}";
     }
 }

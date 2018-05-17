@@ -13,19 +13,25 @@
  * limitations under the License.
  */
 
-package com.abilix.myapp.bean;
+package com.abilix.myapp.bean.douban;
 
 /**
- * Created by pp.tai on 11:45 2018/05/02.
+ * Created by pp.tai on 14:16 2018/05/17.
  */
 
 public class TokenInfo {
 
+    /**
+     * access_token : a14afef0f66fcffce3e0fcd2e34f6ff4
+     * expires_in : 3920
+     * refresh_token : 5d633d136b6d56a41829b73a424803ec
+     * douban_user_id : 1221
+     */
+
     private String access_token;
-    private String refresh_token;
-    private String token_type;
-    private String auth_code;
     private long expires_in;
+    private String refresh_token;
+    private String douban_user_id;
 
     public String getAccess_token() {
         return access_token;
@@ -33,6 +39,14 @@ public class TokenInfo {
 
     public void setAccess_token(String access_token) {
         this.access_token = access_token;
+    }
+
+    public long getExpires_in() {
+        return expires_in;
+    }
+
+    public void setExpires_in(long expires_in) {
+        this.expires_in = expires_in;
     }
 
     public String getRefresh_token() {
@@ -43,27 +57,11 @@ public class TokenInfo {
         this.refresh_token = refresh_token;
     }
 
-    public String getToken_type() {
-        return token_type;
+    public String getDouban_user_id() {
+        return douban_user_id;
     }
 
-    public void setToken_type(String token_type) {
-        this.token_type = token_type;
-    }
-
-    public String getAuth_code() {
-        return auth_code;
-    }
-
-    public void setAuth_code(String auth_code) {
-        this.auth_code = auth_code;
-    }
-
-    public long getExpires_in() {
-        return expires_in;
-    }
-
-    public void setExpires_in(long expires_in) {
-        this.expires_in = expires_in;
+    public void setDouban_user_id(String douban_user_id) {
+        this.douban_user_id = douban_user_id;
     }
 }

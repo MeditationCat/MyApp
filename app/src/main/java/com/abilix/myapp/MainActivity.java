@@ -20,13 +20,13 @@ import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.abilix.myapp.api.Api;
+import com.abilix.myapp.api.DBApi;
 import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.subscriber.BaseObserver;
 import com.abilix.myapp.base.BaseActivity;
-import com.abilix.myapp.bean.MovieInfo;
+import com.abilix.myapp.bean.douban.MovieInfo;
 import com.orhanobut.logger.Logger;
 
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -34,6 +34,8 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import butterknife.BindView;
 import io.reactivex.disposables.Disposable;
 
 
@@ -48,14 +50,16 @@ public class MainActivity extends BaseActivity {
         System.loadLibrary("native-lib");
     }
 
+    @BindView(R.id.sample_text)
+    TextView textView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_main);
 
         // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        textView.setText(stringFromJNI());
 
 
     }
@@ -80,7 +84,25 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        subScribe(Api.getInstance().getMovieList(0, 2), new BaseObserver<MovieInfo>() {
+        DBApi.getInstance().getMovieTop250(0, 1)
+                .subscribe(new com.abilix.myapp.api.observer.BaseObserver<MovieInfo>(this) {
+                    @Override
+                    public void onNext(MovieInfo movieInfo) {
+                        Logger.d("onNext: %s",movieInfo.getTitle());
+                        textView.setText(movieInfo.getTitle());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Logger.d("onComplete:");
+                    }
+
+                    @Override
+                    protected void onError(ApiException e) {
+                        Logger.d("onError: %s", e.getMessage());
+                    }
+                });
+        /*subScribe(Api.getInstance().getMovieList(0, 2), new BaseObserver<MovieInfo>() {
             @Override
             public void onSubscribe(Disposable d) {
                 Logger.d("onSubscribe: %b", d.isDisposed());
@@ -101,7 +123,7 @@ public class MainActivity extends BaseActivity {
                 Logger.d("onError: %s", e.getMessage());
             }
         });
-        /*Api.getInstance().getMovieList(0, 2)
+        Api.getInstance().getMovieList(0, 2)
                 .subscribe(new BaseObserver<MovieInfo>() {
                     @Override
                     public void onSubscribe(Disposable d) {

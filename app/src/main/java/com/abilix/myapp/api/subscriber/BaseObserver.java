@@ -17,16 +17,17 @@ package com.abilix.myapp.api.subscriber;
 
 import com.abilix.myapp.api.exception.ApiException;
 
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 
 
 public interface BaseObserver<T> {
 
-    void onSubscribe(Disposable d);
+    void onSubscribe(@NonNull Disposable d);
 
-    void onNext(T t);
+    void onNext(@NonNull T t);
 
     void onComplete();
 
-    void onError(ApiException e);
+    void onError(@NonNull ApiException e);
 }

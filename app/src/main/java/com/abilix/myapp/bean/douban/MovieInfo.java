@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.abilix.myapp.bean;
+package com.abilix.myapp.bean.douban;
 
 
 import java.util.List;

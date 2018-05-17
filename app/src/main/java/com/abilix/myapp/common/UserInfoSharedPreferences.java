@@ -18,9 +18,8 @@ package com.abilix.myapp.common;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.abilix.myapp.bean.TokenInfo;
 import com.abilix.myapp.bean.UserInfo;
-import com.google.gson.Gson;
+import com.abilix.myapp.bean.douban.TokenInfo;
 
 public class UserInfoSharedPreferences {
 
@@ -51,9 +50,9 @@ public class UserInfoSharedPreferences {
         if (tokenInfo.getRefresh_token() != null) {
             editor.putString("refresh_token", tokenInfo.getRefresh_token());
         }
-        if (tokenInfo.getToken_type() != null) {
+        /*if (tokenInfo.getToken_type() != null) {
             editor.putString("token_type", tokenInfo.getToken_type());
-        }
+        }*/
 
         long expires_in = System.currentTimeMillis() + tokenInfo.getExpires_in() * 1000;
         editor.putLong("expires_in", expires_in);
@@ -69,7 +68,7 @@ public class UserInfoSharedPreferences {
         TokenInfo tokenInfo = new TokenInfo();
         tokenInfo.setAccess_token(userconfig.getString("access_token", ""));
         tokenInfo.setRefresh_token(userconfig.getString("refresh_token", ""));
-        tokenInfo.setToken_type(userconfig.getString("token_type", ""));
+        //tokenInfo.setToken_type(userconfig.getString("token_type", ""));
         tokenInfo.setExpires_in(userconfig.getLong("expires_in", 0));
         return tokenInfo;
     }
