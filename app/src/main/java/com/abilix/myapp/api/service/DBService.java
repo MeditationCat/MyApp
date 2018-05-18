@@ -15,7 +15,6 @@
 
 package com.abilix.myapp.api.service;
 
-import com.abilix.myapp.bean.BaseEntity;
 import com.abilix.myapp.bean.douban.MovieInfo;
 import com.abilix.myapp.bean.douban.TokenInfo;
 

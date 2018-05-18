@@ -19,10 +19,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
-import com.abilix.myapp.api.Api;
 import com.abilix.myapp.api.DBApi;
 import com.abilix.myapp.api.exception.ApiException;
-import com.abilix.myapp.api.subscriber.BaseObserver;
+import com.abilix.myapp.api.observer.BaseObserver;
 import com.abilix.myapp.base.BaseActivity;
 import com.abilix.myapp.bean.douban.MovieInfo;
 import com.orhanobut.logger.Logger;
@@ -85,7 +84,7 @@ public class MainActivity extends BaseActivity {
         });
 
         DBApi.getInstance().getMovieTop250(0, 1)
-                .subscribe(new com.abilix.myapp.api.observer.BaseObserver<MovieInfo>(this) {
+                .subscribe(new BaseObserver<MovieInfo>(this) {
                     @Override
                     public void onNext(MovieInfo movieInfo) {
                         Logger.d("onNext: %s",movieInfo.getTitle());

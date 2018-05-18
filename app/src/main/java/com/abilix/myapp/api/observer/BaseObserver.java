@@ -20,7 +20,7 @@ import android.support.annotation.CallSuper;
 
 import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.exception.ExceptionEngine;
-import com.abilix.myapp.base.BaseActivity;
+import com.abilix.myapp.base.BaseView;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -28,7 +28,6 @@ import io.reactivex.disposables.Disposable;
 public abstract class BaseObserver<T> implements Observer<T> {
 
     private Context mContext;
-    private Disposable mDisposable;
 
     public BaseObserver(Context context) {
         this.mContext = context;
@@ -44,9 +43,7 @@ public abstract class BaseObserver<T> implements Observer<T> {
     @Override
     @CallSuper
     public void onSubscribe(Disposable d) {
-        if (mContext instanceof BaseActivity) {
-            ((BaseActivity) mContext).addSubscribe(d);
-        }
+        ((BaseView) mContext).addSubscribe(d);
     }
 
     @Override
@@ -55,6 +52,5 @@ public abstract class BaseObserver<T> implements Observer<T> {
         onError(apiException);
     }
 
-    //protected abstract void onSubscribed(Disposable d);
     protected abstract void onError(ApiException e);
 }

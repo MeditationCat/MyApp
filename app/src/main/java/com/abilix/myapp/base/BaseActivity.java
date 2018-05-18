@@ -26,7 +26,6 @@ import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.exception.ExceptionEngine;
 import com.abilix.myapp.api.subscriber.BaseObserver;
 import com.abilix.myapp.bean.BaseEntity;
-import com.abilix.myapp.utils.ToastUtil;
 import com.orhanobut.logger.Logger;
 
 import butterknife.ButterKnife;
@@ -40,7 +39,7 @@ import io.reactivex.disposables.Disposable;
  * Created by pp.tai on 17:22 2018/04/09.
  */
 
-public abstract class BaseActivity extends FragmentActivity {
+public abstract class BaseActivity extends FragmentActivity implements BaseView {
 
     protected CompositeDisposable mDisposables;
 
@@ -112,7 +111,7 @@ public abstract class BaseActivity extends FragmentActivity {
      */
     protected void startActivity(Class<?> cls, Bundle bundle) {
         Intent intent = new Intent();
-        intent.setClass(this, cls);
+        intent.setClass(BaseActivity.this, cls);
         if (bundle != null) {
             intent.putExtras(bundle);
         }
@@ -126,10 +125,11 @@ public abstract class BaseActivity extends FragmentActivity {
      */
     protected void startActivity(Class<?> cls) {
         Intent intent = new Intent();
-        intent.setClass(this, cls);
+        intent.setClass(BaseActivity.this, cls);
         startActivity(intent);
     }
 
+    @Override
     public void addSubscribe(Disposable d) {
         if (mDisposables == null) {
             mDisposables = new CompositeDisposable();
@@ -143,10 +143,7 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     }
 
-    //@SuppressWarnings("unchecked")
-   //
-
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     protected void subScribe(@NonNull Observable<BaseEntity> observable, @NonNull final BaseObserver baseObserver) {
         observable.subscribe(new Observer<BaseEntity>() {
             @Override
@@ -177,5 +174,5 @@ public abstract class BaseActivity extends FragmentActivity {
                 baseObserver.onComplete();
             }
         });
-    }
+    }*/
 }

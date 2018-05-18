@@ -15,7 +15,7 @@
 
 package com.abilix.myapp.base;
 
-import android.os.Bundle;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by pp.tai on 11:00 2018/04/23.
@@ -23,6 +23,5 @@ import android.os.Bundle;
 
 public interface BaseView {
 
-    void startActivity(Class<?> cls);
-    void startActivity(Class<?> cls, Bundle bundle);
+    void addSubscribe(Disposable d);
 }
