@@ -21,7 +21,6 @@ import io.reactivex.disposables.Disposable;
  * Created by pp.tai on 11:00 2018/04/23.
  */
 
-public interface BaseView {
-
+public interface BaseView<T> {
     void addSubscribe(Disposable d);
 }

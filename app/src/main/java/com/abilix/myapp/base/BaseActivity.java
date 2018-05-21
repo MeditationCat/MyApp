@@ -17,21 +17,12 @@ package com.abilix.myapp.base;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.WindowManager;
 
-
-import com.abilix.myapp.api.exception.ApiException;
-import com.abilix.myapp.api.exception.ExceptionEngine;
-import com.abilix.myapp.api.subscriber.BaseObserver;
-import com.abilix.myapp.bean.BaseEntity;
-import com.orhanobut.logger.Logger;
-
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -101,6 +92,7 @@ public abstract class BaseActivity extends FragmentActivity implements BaseView 
      *
      * @return layout Id
      */
+    @LayoutRes
     protected abstract int getLayoutId();
 
     /**

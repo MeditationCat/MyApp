@@ -24,6 +24,7 @@ import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.observer.BaseObserver;
 import com.abilix.myapp.base.BaseActivity;
 import com.abilix.myapp.bean.douban.MovieInfo;
+import com.abilix.myapp.utils.CustomDialog;
 import com.orhanobut.logger.Logger;
 
 import java.util.concurrent.BlockingQueue;
@@ -35,7 +36,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.disposables.Disposable;
 
 
 /**
@@ -89,6 +89,7 @@ public class MainActivity extends BaseActivity {
                     public void onNext(MovieInfo movieInfo) {
                         Logger.d("onNext: %s",movieInfo.getTitle());
                         textView.setText(movieInfo.getTitle());
+                        CustomDialog.showConfirmDialog(MainActivity.this, movieInfo.getTitle(), movieInfo.getSubjects().get(0).getId());
                     }
 
                     @Override
@@ -101,57 +102,7 @@ public class MainActivity extends BaseActivity {
                         Logger.d("onError: %s", e.getMessage());
                     }
                 });
-        /*subScribe(Api.getInstance().getMovieList(0, 2), new BaseObserver<MovieInfo>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                Logger.d("onSubscribe: %b", d.isDisposed());
-            }
 
-            @Override
-            public void onNext(MovieInfo movieInfo) {
-                Logger.d("onNext: %s",movieInfo.getTitle());
-            }
-
-            @Override
-            public void onComplete() {
-                Logger.d("onComplete:");
-            }
-
-            @Override
-            public void onError(ApiException e) {
-                Logger.d("onError: %s", e.getMessage());
-            }
-        });
-        Api.getInstance().getMovieList(0, 2)
-                .subscribe(new BaseObserver<MovieInfo>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        addSubscribe(d);
-                        Logger.d("onSubscribe: %b", d.isDisposed());
-                    }
-
-                    @Override
-                    public void onNext(final MovieInfo movieInfo) {
-                        Logger.d("onNext: %s",movieInfo.getTitle());
-
-                        List<MovieInfo.SubjectsBean> list = movieInfo.getSubjects();
-                        for (MovieInfo.SubjectsBean sub : list) {
-                            Logger.d("onNext: id=%s year=%s title:%s", sub.getId(), sub.getYear() ,sub.getTitle());
-                        }
-                        final TextView textView = findViewById(R.id.sample_text);
-                        textView.setText(movieInfo.getTitle());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Logger.d("onComplete:");
-                    }
-
-                    @Override
-                    public void onError(ApiException e) {
-                        Logger.d("onError: %s", e.getMessage());
-                    }
-                });*/
     }
 
     @Override
