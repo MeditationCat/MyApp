@@ -3,4 +3,33 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="transparent">#00ffffff</color>
+    <!-- 白色 -->
+    <color name="white">#ffffff</color>
+    <!-- 主题颜色 -->
+    <color name="themeColor">#FF7108</color>
+    <color name="background_color">#f7f8f9</color>
+    <color name="list_bg">#ea5c52</color>
+    <!-- 文字颜色 -->
+    <color name="text_theme">#ff7108</color>
+    <color name="text_white">#ffffff</color>
+    <color name="text_black">#000000</color>
+    <color name="text_black3">#333333</color>
+    <color name="text_black6">#666666</color>
+    <color name="text_gray">#999999</color>
+    <color name="text_darker_gray">#627984</color>
+    <color name="text_orange">#ffb883</color>
+
+    <!--分割线颜色-->
+    <color name="line">#bbbbbb</color>
+    a<!-- 黑色半透明 -->
+    <color name="black_30">#30000000</color>
+    <color name="black_80">#80000000</color>
+    <color name="pay_way_cho">#FAC196</color>
+    <color name="pay_way_uncho">#F8E1D1</color>
+
+    <color name="green_hand">#00ffffff</color>
+    <color name="call">#247ad1</color>
+
 </resources>

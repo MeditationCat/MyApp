@@ -7,7 +7,7 @@
 
     <style name="dialog" parent="android:style/Theme.Dialog">
         <!-- 透明背景 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <!-- 无边框 -->
         <item name="android:windowFrame">@null</item>
         <!-- 是否没有标题 -->
