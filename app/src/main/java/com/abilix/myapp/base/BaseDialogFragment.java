@@ -15,14 +15,23 @@
 
 package com.abilix.myapp.base;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.abilix.myapp.R;
 
@@ -44,6 +53,21 @@ public abstract class BaseDialogFragment extends DialogFragment {
         //getDialog().getWindow().setLayout(dm.widthPixels, getDialog().getWindow().getAttributes().height);
         //设置显示和关闭时的动画
         //getDialog().getWindow().setWindowAnimations(R.style.style_item);
+        Dialog myDialog = getDialog();
+        if (myDialog != null) {
+            Window window = myDialog.getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams windowParams = window.getAttributes();
+                windowParams.dimAmount = 0.0f;
+                window.setAttributes(windowParams);
+                //在5.0以下的版本会出现白色背景边框，若在5.0以上设置则会造成文字部分的背景也变成透明
+                if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    if(myDialog instanceof ProgressDialog || myDialog instanceof DatePickerDialog) {//目前只有这两个dialog会出现边框
+                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    }
+                }
+            }
+        }
     }
 
     @Nullable
@@ -52,11 +76,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
         return inflater.inflate(getLayoutId(), container);
     }
 
+    @NonNull
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        return super.onCreateDialog(savedInstanceState);
     }
-
 
     /**
      * get layout id
