@@ -1,22 +1,30 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.Material.Light.DarkActionBar">
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="dialog" parent="android:style/Theme.Dialog">
-        <!-- 透明背景 -->
-        <item name="android:windowBackground">@color/transparent</item>
-        <!-- 无边框 -->
-        <item name="android:windowFrame">@null</item>
-        <!-- 是否没有标题 -->
+    <style name="CustomDialog" parent="android:style/Theme.Dialog">
+        <!-- 设置窗口是否没显示标题 -->
         <item name="android:windowNoTitle">true</item>
-        <!-- 是否浮现在activity之上 -->
-        <item name="android:windowIsFloating">true</item>
-        <!-- 是否半透明 -->
+        <!-- 设置窗口是否半透明 -->
         <item name="android:windowIsTranslucent">true</item>
+        <!-- 设置窗口边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 设置窗口背景 -->
+        <item name="android:windowBackground">@color/transparent</item>
+        <!-- 设置窗口是否浮动 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 设置触摸窗口外部是否关闭 -->
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <!-- 设置窗口最小宽度最大值 -->
+        <item name="android:windowMinWidthMajor">80%</item>
+        <!-- 设置窗口最小宽度最小值 -->
+        <item name="android:windowMinWidthMinor">80%</item>
+
     </style>
+
     <!-- 对话框开启和关闭的动画 -->
     <style name="style_item" parent="android:Animation">
         <!-- 从屏幕底部弹出 -->

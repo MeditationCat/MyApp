@@ -18,6 +18,7 @@ package com.abilix.myapp.base;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -26,6 +27,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,19 +42,15 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.dialog);//设置无标题、透明背景、无边框等等属性
-        setCancelable(false);//设置点击除了对话框以外的部分就关闭
+        //设置Style和theme
+        setStyle(STYLE_NO_TITLE, R.style.CustomDialog);
+        //设置触摸窗口外部是否关闭
+        setCancelable(true);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        //设置宽度满屏
-        //DisplayMetrics dm = new DisplayMetrics();
-        //getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-        //getDialog().getWindow().setLayout(dm.widthPixels, getDialog().getWindow().getAttributes().height);
-        //设置显示和关闭时的动画
-        //getDialog().getWindow().setWindowAnimations(R.style.style_item);
         Dialog myDialog = getDialog();
         if (myDialog != null) {
             Window window = myDialog.getWindow();
@@ -66,6 +64,12 @@ public abstract class BaseDialogFragment extends DialogFragment {
                         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     }
                 }
+                //设置窗口显示宽度和高度
+                //DisplayMetrics dm = new DisplayMetrics();
+                //getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                //window.setLayout((int) (dm.widthPixels * 0.80f), window.getAttributes().height);
+                //设置显示和关闭时的动画
+                //window.setWindowAnimations(R.style.style_item);
             }
         }
     }

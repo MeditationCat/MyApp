@@ -17,6 +17,8 @@ package com.abilix.myapp;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.abilix.myapp.api.DBApi;
@@ -52,14 +54,12 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.sample_text)
     TextView textView;
 
+    @BindView(R.id.btn_01)
+    Button button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-
-        // Example of a call to a native method
-        textView.setText(stringFromJNI());
-
 
     }
 
@@ -83,30 +83,37 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        DBApi.getInstance().getMovieTop250(0, 1)
-                .subscribe(new BaseObserver<MovieInfo>(this) {
-                    @Override
-                    public void onNext(MovieInfo movieInfo) {
-                        Logger.d("onNext: %s",movieInfo.getTitle());
-                        textView.setText(movieInfo.getTitle());
-                        CustomDialog.showConfirmDialog(MainActivity.this, movieInfo.getTitle(), movieInfo.getSubjects().get(0).getId());
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Logger.d("onComplete:");
-                    }
-
-                    @Override
-                    protected void onError(ApiException e) {
-                        Logger.d("onError: %s", e.getMessage());
-                    }
-                });
 
     }
 
     @Override
     protected void configViews() {
+        textView.setText(stringFromJNI());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBApi.getInstance().getMovieTop250(0, 1)
+                        .subscribe(new BaseObserver<MovieInfo>(MainActivity.this) {
+                            @Override
+                            public void onNext(MovieInfo movieInfo) {
+                                Logger.d("onNext: %s",movieInfo.getTitle());
+                                textView.setText(movieInfo.getTitle());
+                                CustomDialog.showConfirmDialog(MainActivity.this, movieInfo.getTitle(), movieInfo.getSubjects().get(0).getId());
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Logger.d("onComplete:");
+                            }
+
+                            @Override
+                            protected void onError(ApiException e) {
+                                Logger.d("onError: %s", e.getMessage());
+                            }
+                        });
+
+            }
+        });
 
     }
 
