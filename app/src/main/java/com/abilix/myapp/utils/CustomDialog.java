@@ -41,7 +41,7 @@ public class CustomDialog {
 
     public static void showConfirmDialog(FragmentActivity context, String title, String msg) {
         BaseDialogFragment customDialog = new BaseDialogFragment();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(R.layout.layout_dialog_confirm)
                 .setTitle(title)
                 .setMessage(msg)
@@ -58,13 +58,32 @@ public class CustomDialog {
                     }
                 })
                 .setNegativeButton("Cancel", null)
-                .setCancelable(false);
+                .setCancelable(false);*/
         //customDialog;
-        customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
-        //customDialog.setCancelable(false);
         customDialog.setLayoutId(R.layout.layout_dialog_confirm);
-        customDialog.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
+        customDialog.setCancelable(false);
+        customDialog.setGravity(Gravity.CENTER);
 
+        customDialog.setTitle("提示");
+        customDialog.setMessage("测试信息");
+        customDialog.setPositiveButton("确认");
+        customDialog.setNegativeButton("取消");
+        customDialog.setDialogButtonListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                    case DialogInterface.BUTTON_NEUTRAL:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
         customDialog.show(context.getSupportFragmentManager(), context.getClass().getName());
     }
 }

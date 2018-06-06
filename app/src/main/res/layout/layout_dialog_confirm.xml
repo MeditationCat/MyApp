@@ -6,7 +6,7 @@
     android:background="@drawable/shape_dialog_corners_bg">
 
     <TextView
-        android:id="@+id/tv_dialog_title"
+        android:id="@+id/tv_dialog_confirm_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_dialog_content"
+        android:id="@+id/tv_dialog_confirm_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="17dp"
@@ -31,7 +31,7 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_confirm_title" />
 
     <View
         android:id="@+id/line"
@@ -39,7 +39,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="18dp"
         android:background="@color/line"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_content" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_confirm_message" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/line">
 
         <TextView
-            android:id="@+id/tv_cancel"
+            android:id="@+id/tv_dialog_confirm_negative"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -73,7 +73,7 @@
             app:layout_constraintTop_toBottomOf="@+id/line" />
 
         <TextView
-            android:id="@+id/tv_confirm"
+            android:id="@+id/tv_dialog_confirm_positive"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
