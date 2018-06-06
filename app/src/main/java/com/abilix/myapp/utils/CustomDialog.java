@@ -16,10 +16,14 @@
 package com.abilix.myapp.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +31,40 @@ import android.view.ViewGroup;
 import com.abilix.myapp.R;
 import com.abilix.myapp.base.BaseDialogFragment;
 
-public class CustomDialog extends BaseDialogFragment {
+import butterknife.BindView;
+
+public class CustomDialog {
 
     public CustomDialog() {
     }
 
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.layout_dialog_confirm;
-    }
-
     public static void showConfirmDialog(FragmentActivity context, String title, String msg) {
-        CustomDialog customDialog = new CustomDialog();
-        customDialog.show(context.getSupportFragmentManager(), "xxxxxxxxxxxxxxxxx");
+        BaseDialogFragment customDialog = new BaseDialogFragment();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(R.layout.layout_dialog_confirm)
+                .setTitle(title)
+                .setMessage(msg)
+                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        return false;
+                    }
+                })
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .setCancelable(false);
+        //customDialog;
+        customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
+        //customDialog.setCancelable(false);
+        customDialog.setLayoutId(R.layout.layout_dialog_confirm);
+        customDialog.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+
+        customDialog.show(context.getSupportFragmentManager(), context.getClass().getName());
     }
 }
