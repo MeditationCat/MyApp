@@ -31,7 +31,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +39,6 @@ import android.widget.TextView;
 
 import com.abilix.myapp.R;
 import com.orhanobut.logger.Logger;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public class BaseDialogFragment extends DialogFragment {
 
@@ -120,26 +116,30 @@ public class BaseDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Logger.d("onCreateDialog()");
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder
-                .setView(getLayoutId())
-                .setTitle("Update")
-                .setMessage("xxxxxxxxxxxxxxxx")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        if (!mCustomDialog) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(mTitle)
+                .setMessage(mMessage)
+                .setPositiveButton(mPositiveButtonText, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //dismiss();
+                        if (mDialogButtonListener != null) {
+                            mDialogButtonListener.onClick(dialog, which);
+                        }
                     }
                 })
-                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                .setNegativeButton(mNegativeButtonText, new DialogInterface.OnClickListener() {
                     @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        return true;
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mDialogButtonListener != null) {
+                            mDialogButtonListener.onClick(dialog, which);
+                        }
                     }
                 })
-                .setNegativeButton("Cancel", null)
-                .setCancelable(false);
-        return  builder.create();*/
+                //.setNeutralButton("Neutral", null)
+                .setCancelable(isCancelable());
+        return  builder.create();
+        }
         return super.onCreateDialog(savedInstanceState);
     }
 
@@ -149,12 +149,10 @@ public class BaseDialogFragment extends DialogFragment {
         Logger.d("onCreateView()");
         if (mCustomDialog) {
             View view = inflater.inflate(mLayoutId, container);
-            TextView title = view.findViewById(R.id.tv_dialog_confirm_title);
-            title.setText(mTitle);
-            ConfirmDialogViewHolder confirmDialogViewHolder = new ConfirmDialogViewHolder();
+            ConfirmDialogViewHolder confirmDialogViewHolder = new ConfirmDialogViewHolder(view);
             confirmDialogViewHolder.setTitle(mTitle);
-            confirmDialogViewHolder.setTitle(mMessage);
-            confirmDialogViewHolder.setPositiveBtn(mPositiveButtonText, new View.OnClickListener() {
+            confirmDialogViewHolder.setMessage(mMessage);
+            confirmDialogViewHolder.setPositiveButton(mPositiveButtonText, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
@@ -163,7 +161,7 @@ public class BaseDialogFragment extends DialogFragment {
                     }
                 }
             });
-            confirmDialogViewHolder.setNegativeBtn(mNegativeButtonText, new View.OnClickListener() {
+            confirmDialogViewHolder.setNegativeButton(mNegativeButtonText, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dismiss();
@@ -206,7 +204,6 @@ public class BaseDialogFragment extends DialogFragment {
                 //设置显示和关闭时的动画
                 //window.setWindowAnimations(R.style.style_item);
             }
-            //myDialog.setCanceledOnTouchOutside(true);
         }
     }
 
@@ -245,47 +242,37 @@ public class BaseDialogFragment extends DialogFragment {
         this.mDimAmount = amount;
     }
 
-    class ConfirmDialogViewHolder {
-        @BindView(R.id.tv_dialog_confirm_title)
+    //确认弹框View绑定
+    class ConfirmDialogViewHolder implements View.OnClickListener {
         TextView title;
-        @BindView(R.id.tv_dialog_confirm_message)
         TextView message;
-        @BindView(R.id.tv_dialog_confirm_negative)
-        TextView negativeBtn;
-        @BindView(R.id.tv_dialog_confirm_positive)
         TextView positiveBtn;
+        TextView negativeBtn;
+        TextView neutralBtn;
 
         private View.OnClickListener mPositiveButtonListener;
         private View.OnClickListener mNegativeButtonListener;
         private View.OnClickListener mNeutralButtonListener;
 
-        public ConfirmDialogViewHolder() {
-        }
-
-        public ConfirmDialogViewHolder(String title, String message) {
-            setTitle(title);
-            setMessage(message);
-        }
-
-        public ConfirmDialogViewHolder(String title, String message,
-                                       String positiveBtn, View.OnClickListener positiveButtonListener,
-                                       String negativeBtn, View.OnClickListener negativeButtonListener) {
-            setTitle(title);
-            setMessage(message);
-            setPositiveBtn(positiveBtn, positiveButtonListener);
-            setNegativeBtn(negativeBtn, negativeButtonListener);
+        public ConfirmDialogViewHolder(View view) {
+            if (view != null) {
+                title = view.findViewById(R.id.tv_dialog_confirm_title);
+                message = view.findViewById(R.id.tv_dialog_confirm_message);
+                positiveBtn = view.findViewById(R.id.tv_dialog_confirm_positive);
+                if (positiveBtn != null) {
+                    positiveBtn.setOnClickListener(this);
+                }
+                negativeBtn = view.findViewById(R.id.tv_dialog_confirm_negative);
+                if (negativeBtn != null) {
+                    negativeBtn.setOnClickListener(this);
+                }
+            }
         }
 
         //设置标题
         public void setTitle(String title) {
             if (this.title != null) {
                 this.title.setText(title);
-            }
-        }
-
-        public void setTitle(@StringRes int resId) {
-            if (this.title != null) {
-                this.title.setText(resId);
             }
         }
 
@@ -296,45 +283,24 @@ public class BaseDialogFragment extends DialogFragment {
             }
         }
 
-        public void setMessage(@StringRes int resId) {
-            if (this.message != null) {
-                this.message.setText(resId);
-            }
-        }
-
         //设置确认按钮
-        public void setPositiveBtn(String positiveBtn, View.OnClickListener positiveButtonListener) {
+        public void setPositiveButton(String positiveBtn, View.OnClickListener positiveButtonListener) {
             if (this.positiveBtn != null) {
                 this.positiveBtn.setText(positiveBtn);
             }
             mPositiveButtonListener = positiveButtonListener;
         }
 
-        public void setPositiveBtn(@StringRes int resId, View.OnClickListener positiveButtonListener) {
-            if (this.positiveBtn != null) {
-                this.positiveBtn.setText(resId);
-            }
-            mPositiveButtonListener = positiveButtonListener;
-        }
-
         //设置取消按钮
-        public void setNegativeBtn(String negativeBtn, View.OnClickListener negativeButtonListener) {
+        public void setNegativeButton(String negativeBtn, View.OnClickListener negativeButtonListener) {
             if (this.negativeBtn != null) {
                 this.negativeBtn.setText(negativeBtn);
             }
             mNegativeButtonListener = negativeButtonListener;
         }
 
-        public void setNegativeBtn(@StringRes int resId, View.OnClickListener negativeButtonListener) {
-            if (this.negativeBtn != null) {
-                this.negativeBtn.setText(resId);
-            }
-            mNegativeButtonListener = negativeButtonListener;
-        }
-
-        @OnClick({R.id.tv_dialog_confirm_positive, R.id.tv_dialog_confirm_negative})
+        @Override
         public void onClick(View v) {
-
             switch (v.getId()) {
                 case R.id.tv_dialog_confirm_negative:
                     if (mNegativeButtonListener != null) {

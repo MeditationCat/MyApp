@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 
 import com.abilix.myapp.R;
 import com.abilix.myapp.base.BaseDialogFragment;
+import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
 
@@ -39,26 +40,8 @@ public class CustomDialog {
     }
 
 
-    public static void showConfirmDialog(FragmentActivity context, String title, String msg) {
+    public static void showConfirmDialog(final FragmentActivity context, String title, String msg) {
         BaseDialogFragment customDialog = new BaseDialogFragment();
-        /*AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setView(R.layout.layout_dialog_confirm)
-                .setTitle(title)
-                .setMessage(msg)
-                .setOnKeyListener(new DialogInterface.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        return false;
-                    }
-                })
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .setCancelable(false);*/
         //customDialog;
         customDialog.setLayoutId(R.layout.layout_dialog_confirm);
         customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
@@ -72,18 +55,22 @@ public class CustomDialog {
         customDialog.setDialogButtonListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Logger.d("setDialogButtonListener: onClick()----> " + which);
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
+                        ToastUtil.showShort(context, "BUTTON_POSITIVE");
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
+                        ToastUtil.showShort(context, "BUTTON_NEGATIVE");
                         break;
                     case DialogInterface.BUTTON_NEUTRAL:
+                        ToastUtil.showShort(context, "BUTTON_NEUTRAL");
                         break;
                     default:
                         break;
                 }
             }
         });
-        customDialog.show(context.getSupportFragmentManager(), context.getClass().getName());
+        customDialog.show(context.getSupportFragmentManager(), "XXXXXXXXXX");
     }
 }
