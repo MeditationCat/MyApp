@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 
 import com.abilix.myapp.R;
 import com.abilix.myapp.base.BaseDialogFragment;
+import com.abilix.myapp.view.dialog.CommonDialog;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -41,7 +42,7 @@ public class CustomDialog {
 
 
     public static void showConfirmDialog(final FragmentActivity context, String title, String msg) {
-        BaseDialogFragment customDialog = new BaseDialogFragment();
+        BaseDialogFragment customDialog = new CommonDialog();
         //customDialog;
         customDialog.setLayoutId(R.layout.layout_dialog_confirm);
         customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
