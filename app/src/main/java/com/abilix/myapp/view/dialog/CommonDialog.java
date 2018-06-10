@@ -116,8 +116,13 @@ public class CommonDialog extends BaseDialogFragment {
     }
 
     @Override
-    protected View BindLayoutView(LayoutInflater inflater, @Nullable ViewGroup container) {
-        return null;
+    protected void BindView(View view) {
+        //
+    }
+
+    @Override
+    protected int getLayoutResId() {
+        return View.NO_ID;
     }
 
     public static class Builder {
@@ -393,140 +398,6 @@ public class CommonDialog extends BaseDialogFragment {
             return this;
         }
 
-
-        /**
-         * Set a list of items to be displayed in the dialog as the content,
-         * you will be notified of the selected item via the supplied listener.
-         * This should be an array type, e.g. R.array.foo. The list will have
-         * a check mark displayed to the right of the text for each checked
-         * item. Clicking on an item in the list will not dismiss the dialog.
-         * Clicking on a button will dismiss the dialog.
-         *
-         * @param itemsId the resource id of an array i.e. R.array.foo
-         * @param checkedItems specifies which items are checked. It should be null in which case no
-         *        items are checked. If non null it must be exactly the same length as the array of
-         *        items.
-         * @param listener notified when an item on the list is clicked. The dialog will not be
-         *        dismissed when an item is clicked. It will only be dismissed if clicked on a
-         *        button, if no buttons are supplied it's up to the user to dismiss the dialog.
-         *
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setMultiChoiceItems(@ArrayRes int itemsId, boolean[] checkedItems,
-                                           final OnMultiChoiceClickListener listener) {
-            P.mItems = P.mContext.getResources().getTextArray(itemsId);
-            P.mOnCheckboxClickListener = listener;
-            P.mCheckedItems = checkedItems;
-            P.mIsMultiChoice = true;
-            return this;
-        }
-
-        /**
-         * Set a list of items to be displayed in the dialog as the content,
-         * you will be notified of the selected item via the supplied listener.
-         * The list will have a check mark displayed to the right of the text
-         * for each checked item. Clicking on an item in the list will not
-         * dismiss the dialog. Clicking on a button will dismiss the dialog.
-         *
-         * @param items the text of the items to be displayed in the list.
-         * @param checkedItems specifies which items are checked. It should be null in which case no
-         *        items are checked. If non null it must be exactly the same length as the array of
-         *        items.
-         * @param listener notified when an item on the list is clicked. The dialog will not be
-         *        dismissed when an item is clicked. It will only be dismissed if clicked on a
-         *        button, if no buttons are supplied it's up to the user to dismiss the dialog.
-         *
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setMultiChoiceItems(CharSequence[] items, boolean[] checkedItems,
-                                           final OnMultiChoiceClickListener listener) {
-            P.mItems = items;
-            P.mOnCheckboxClickListener = listener;
-            P.mCheckedItems = checkedItems;
-            P.mIsMultiChoice = true;
-            return this;
-        }
-
-        /**
-         * Set a list of items to be displayed in the dialog as the content, you will be notified of
-         * the selected item via the supplied listener. This should be an array type i.e.
-         * R.array.foo The list will have a check mark displayed to the right of the text for the
-         * checked item. Clicking on an item in the list will not dismiss the dialog. Clicking on a
-         * button will dismiss the dialog.
-         *
-         * @param itemsId the resource id of an array i.e. R.array.foo
-         * @param checkedItem specifies which item is checked. If -1 no items are checked.
-         * @param listener notified when an item on the list is clicked. The dialog will not be
-         *        dismissed when an item is clicked. It will only be dismissed if clicked on a
-         *        button, if no buttons are supplied it's up to the user to dismiss the dialog.
-         *
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setSingleChoiceItems(@ArrayRes int itemsId, int checkedItem,
-                                            final OnClickListener listener) {
-            P.mItems = P.mContext.getResources().getTextArray(itemsId);
-            P.mOnClickListener = listener;
-            P.mCheckedItem = checkedItem;
-            P.mIsSingleChoice = true;
-            return this;
-        }
-
-        /**
-         * Set a list of items to be displayed in the dialog as the content, you will be notified of
-         * the selected item via the supplied listener. The list will have a check mark displayed to
-         * the right of the text for the checked item. Clicking on an item in the list will not
-         * dismiss the dialog. Clicking on a button will dismiss the dialog.
-         *
-         * @param items the items to be displayed.
-         * @param checkedItem specifies which item is checked. If -1 no items are checked.
-         * @param listener notified when an item on the list is clicked. The dialog will not be
-         *        dismissed when an item is clicked. It will only be dismissed if clicked on a
-         *        button, if no buttons are supplied it's up to the user to dismiss the dialog.
-         *
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setSingleChoiceItems(CharSequence[] items, int checkedItem, final OnClickListener listener) {
-            P.mItems = items;
-            P.mOnClickListener = listener;
-            P.mCheckedItem = checkedItem;
-            P.mIsSingleChoice = true;
-            return this;
-        }
-
-        /**
-         * Set a list of items to be displayed in the dialog as the content, you will be notified of
-         * the selected item via the supplied listener. The list will have a check mark displayed to
-         * the right of the text for the checked item. Clicking on an item in the list will not
-         * dismiss the dialog. Clicking on a button will dismiss the dialog.
-         *
-         * @param adapter The {@link ListAdapter} to supply the list of items
-         * @param checkedItem specifies which item is checked. If -1 no items are checked.
-         * @param listener notified when an item on the list is clicked. The dialog will not be
-         *        dismissed when an item is clicked. It will only be dismissed if clicked on a
-         *        button, if no buttons are supplied it's up to the user to dismiss the dialog.
-         *
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setSingleChoiceItems(ListAdapter adapter, int checkedItem, final OnClickListener listener) {
-            P.mAdapter = adapter;
-            P.mOnClickListener = listener;
-            P.mCheckedItem = checkedItem;
-            P.mIsSingleChoice = true;
-            return this;
-        }
-
-        /**
-         * Sets a listener to be invoked when an item in the list is selected.
-         *
-         * @param listener the listener to be invoked
-         * @return this Builder object to allow for chaining of calls to set methods
-         * @see AdapterView#setOnItemSelectedListener(android.widget.AdapterView.OnItemSelectedListener)
-         */
-        public Builder setOnItemSelectedListener(final AdapterView.OnItemSelectedListener listener) {
-            P.mOnItemSelectedListener = listener;
-            return this;
-        }
-
         /**
          * Set a custom view resource to be the contents of the Dialog. The
          * resource will be inflated, adding all top-level views to the screen.
@@ -560,23 +431,6 @@ public class CommonDialog extends BaseDialogFragment {
             P.mView = view;
             P.mViewLayoutResId = 0;
             P.mViewSpacingSpecified = false;
-            return this;
-        }
-
-
-        /**
-         * Sets the Dialog to use the inverse background, regardless of what the
-         * contents is.
-         *
-         * @param useInverseBackground Whether to use the inverse background
-         * @return This Builder object to allow for chaining of calls to set methods
-         * @deprecated This flag is only used for pre-Material themes. Instead,
-         *             specify the window background using on the alert dialog
-         *             theme.
-         */
-        @Deprecated
-        public Builder setInverseBackgroundForced(boolean useInverseBackground) {
-            P.mForceInverseBackground = useInverseBackground;
             return this;
         }
 

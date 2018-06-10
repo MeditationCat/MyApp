@@ -17,6 +17,7 @@ package com.abilix.myapp.base;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -39,12 +40,20 @@ public abstract class BaseDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = BindLayoutView(inflater, container);
-        if (view != null) {
+        if (getLayoutResId() != View.NO_ID) {
+            View view = inflater.inflate(getLayoutResId(), container, false);
+            BindView(view);
             return view;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    /**
+     * 获取布局Id
+     * @return 返回布局Id 如果不使用布局返回 #View.NO_ID;
+     */
+    @LayoutRes
+    protected abstract int getLayoutResId();
 
     /**
      * 绑定实例化的弹窗
@@ -53,11 +62,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
     protected abstract Dialog BindDialog();
 
     /**
-     * 绑定填充的Layout视图
-     * @param inflater LayoutInflater对象，可用于扩展Fragment中的任何视图
-     * @param container 如果非null，这是该Fragment的UI应该附加到的父视图，Fragment不应该自己添加视图，但是可以使用它来生成视图的LayoutParams
-     * @return 返回填充好的Layout视图
+     *  绑定dialog视图
+     * @param view dialog视图
      */
-    protected abstract View BindLayoutView(LayoutInflater inflater, @Nullable ViewGroup container);
+    protected abstract void BindView(View view);
 
 }
