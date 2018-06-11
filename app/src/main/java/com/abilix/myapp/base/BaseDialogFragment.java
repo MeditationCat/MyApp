@@ -16,50 +16,79 @@
 package com.abilix.myapp.base;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 public abstract class BaseDialogFragment extends DialogFragment {
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = BindDialog();
-        if (dialog != null) {
-            return dialog;
-        }
         return super.onCreateDialog(savedInstanceState);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (getLayoutResId() != View.NO_ID) {
-            View view = inflater.inflate(getLayoutResId(), container, false);
+        View view;
+        if (getLayoutResId() != 0) {
+            view = inflater.inflate(getLayoutResId(), container, false);
+        } else {
+            view = getDialogView();
+        }
+        if (view != null) {
             BindView(view);
             return view;
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            //设置窗口背景色透明
+            window.setBackgroundDrawable(new ColorDrawable(getBackgroundColor()));
+            //设置窗口显示宽度和高度
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            DisplayMetrics dm = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+            layoutParams.width = (int) (getWindowWidthAmount() * dm.widthPixels);
+            //layoutParams.height = window.getAttributes().height;
+            //设置窗口背后暗淡效果
+            layoutParams.dimAmount = getDimAmount();
+            //设置窗口显示位置
+            layoutParams.gravity = getGravity();
+            window.setAttributes(layoutParams);
+            //设置显示和关闭时的动画
+            //window.setWindowAnimations(R.style.style_item);
+        }
+    }
+
     /**
      * 获取布局Id
-     * @return 返回布局Id 如果不使用布局返回 #View.NO_ID;
+     * @return 返回布局Id 如果不使用布局返回 0;
      */
     @LayoutRes
     protected abstract int getLayoutResId();
 
     /**
-     * 绑定实例化的弹窗
-     * @return 返回实例化的Dialog
+     * 获取dialog视图
+     * @return 返回dialog视图
      */
-    protected abstract Dialog BindDialog();
+    protected abstract View getDialogView();
 
     /**
      *  绑定dialog视图
@@ -67,4 +96,27 @@ public abstract class BaseDialogFragment extends DialogFragment {
      */
     protected abstract void BindView(View view);
 
+    /**
+     * 获取窗口显示重心位置
+     * @return 返回窗口重心位置
+     */
+    protected abstract int getGravity();
+
+    /**
+     * 获取窗口宽度比例
+     * @return 返回窗口宽度比例
+     */
+    protected abstract float getWindowWidthAmount();
+
+    /**
+     * 获取窗口背后暗淡效果暗度
+     * @return 返回窗口背后暗淡效果暗度
+     */
+    protected abstract float getDimAmount();
+
+    /**
+     * 获取窗口背景颜色值
+     * @return 返回窗口背景颜色值
+     */
+    protected abstract int getBackgroundColor();
 }

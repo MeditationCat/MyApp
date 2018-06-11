@@ -42,18 +42,23 @@ public class CustomDialog {
 
 
     public static void showConfirmDialog(final FragmentActivity context, String title, String msg) {
-        BaseDialogFragment customDialog = new CommonDialog();
-        //customDialog;
-        customDialog.setLayoutId(R.layout.layout_dialog_confirm);
-        customDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomConfirmDialog);
-        customDialog.setCancelable(false);
-        customDialog.setGravity(Gravity.CENTER);
+        CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
+        CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
+                .setTheme(R.style.CustomConfirmDialog)
+                .setView(R.layout.layout_dialog_confirm)
+                //.setCancelable(false)
+                //.setDimAmount(0.2f)
+                //.setGravity(Gravity.BOTTOM)
+                //.setWindowWidthAmount(0.8f)
+                .setTag("xxxxxx")
+                .create();
 
-        customDialog.setTitle("提示");
-        customDialog.setMessage("测试信息");
-        customDialog.setPositiveButton("确认");
-        customDialog.setNegativeButton("取消");
-        customDialog.setDialogButtonListener(new DialogInterface.OnClickListener() {
+        commonDialog.show();
+
+
+        /*AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Logger.d("setDialogButtonListener: onClick()----> " + which);
@@ -71,7 +76,13 @@ public class CustomDialog {
                         break;
                 }
             }
-        });
-        customDialog.show(context.getSupportFragmentManager(), "XXXXXXXXXX");
+        };
+        alertBuilder.setView(R.layout.layout_dialog_confirm)
+                .setCancelable(false)
+                .setTitle("提示")
+                .setMessage("测试信息")
+                .setPositiveButton("确认", onClickListener)
+                .setNegativeButton("取消", onClickListener).show();
+*/
     }
 }
