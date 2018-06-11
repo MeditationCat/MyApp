@@ -79,7 +79,16 @@ public class CommonDialog extends BaseDialogFragment {
 
     @Override
     protected void BindView(View view) {
-        //
+        BindViewHolder viewHolder = new BindViewHolder(view, this);
+        if (mAlert.getSubViewResIds() != null && mAlert.getSubViewResIds().length > 0) {
+            for (int id : mAlert.getSubViewResIds()) {
+                viewHolder.addOnClickListener(id);
+            }
+        }
+        DialogViewInterface.OnBindViewListener bindViewListener = mAlert.getOnBindViewListener();
+        if (bindViewListener != null) {
+            bindViewListener.bindView(viewHolder);
+        }
     }
 
     @Override
@@ -111,6 +120,14 @@ public class CommonDialog extends BaseDialogFragment {
         show(mAlert.getFragmentManager(), mAlert.getTag());
     }
 
+
+    public DialogViewInterface.OnBindViewListener getOnBindViewListener() {
+        return mAlert.getOnBindViewListener();
+    }
+
+    public DialogViewInterface.OnViewClickListener getOnViewClickListener() {
+        return mAlert.getOnViewClickListener();
+    }
 
     /**
      * Builder
@@ -181,8 +198,18 @@ public class CommonDialog extends BaseDialogFragment {
             return this;
         }
 
-        public Builder addOnClickListener(int... viewResIds) {
+        public Builder setOnBindViewListener(DialogViewInterface.OnBindViewListener bindViewListener) {
+            P.mOnBindViewListener = bindViewListener;
+            return this;
+        }
+
+        public Builder addViewOnClickListener(int... viewResIds) {
             P.mSubViewResIds = viewResIds;
+            return this;
+        }
+
+        public Builder setOnViewClickListener(DialogViewInterface.OnViewClickListener viewClickListener) {
+            P.mOnViewClickListener = viewClickListener;
             return this;
         }
 

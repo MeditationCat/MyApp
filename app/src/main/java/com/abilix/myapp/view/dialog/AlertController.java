@@ -29,7 +29,9 @@ class AlertController implements Parcelable, Serializable {
     private boolean mCancelable;
     private int[] mSubViewResIds;
 
-    private DialogInterface.OnClickListener mOnClickListener;
+    private DialogViewInterface.OnBindViewListener mOnBindViewListener;
+    private DialogViewInterface.OnViewClickListener mOnViewClickListener;
+
     private DialogInterface.OnCancelListener mOnCancelListener;
     private DialogInterface.OnDismissListener mOnDismissListener;
 
@@ -134,8 +136,12 @@ class AlertController implements Parcelable, Serializable {
         return mSubViewResIds;
     }
 
-    public DialogInterface.OnClickListener getOnClickListener() {
-        return mOnClickListener;
+    public DialogViewInterface.OnBindViewListener getOnBindViewListener() {
+        return mOnBindViewListener;
+    }
+
+    public DialogViewInterface.OnViewClickListener getOnViewClickListener() {
+        return mOnViewClickListener;
     }
 
     public DialogInterface.OnCancelListener getOnCancelListener() {
@@ -162,7 +168,8 @@ class AlertController implements Parcelable, Serializable {
         public boolean mCancelable = true;
         public int[] mSubViewResIds;
 
-        public DialogInterface.OnClickListener mOnClickListener;
+        public DialogViewInterface.OnBindViewListener mOnBindViewListener;
+        public DialogViewInterface.OnViewClickListener mOnViewClickListener;
         public DialogInterface.OnCancelListener mOnCancelListener;
         public DialogInterface.OnDismissListener mOnDismissListener;
 
@@ -189,8 +196,11 @@ class AlertController implements Parcelable, Serializable {
             dialog.mCancelable = mCancelable;
             dialog.mSubViewResIds = mSubViewResIds;
 
-            if (mOnClickListener != null) {
-                dialog.mOnClickListener = mOnClickListener;
+            if (mOnBindViewListener != null) {
+                dialog.mOnBindViewListener = mOnBindViewListener;
+            }
+            if (mOnViewClickListener != null) {
+                dialog.mOnViewClickListener = mOnViewClickListener;
             }
             if (mOnCancelListener != null) {
                 dialog.mOnCancelListener = mOnCancelListener;

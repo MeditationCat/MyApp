@@ -30,7 +30,9 @@ import android.view.ViewGroup;
 
 import com.abilix.myapp.R;
 import com.abilix.myapp.base.BaseDialogFragment;
+import com.abilix.myapp.view.dialog.BindViewHolder;
 import com.abilix.myapp.view.dialog.CommonDialog;
+import com.abilix.myapp.view.dialog.DialogViewInterface;
 import com.orhanobut.logger.Logger;
 
 import butterknife.BindView;
@@ -41,15 +43,40 @@ public class CustomDialog {
     }
 
 
-    public static void showConfirmDialog(final FragmentActivity context, String title, String msg) {
+    public static void showConfirmDialog(final FragmentActivity context, final String title, final String msg) {
         CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
         CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
                 .setTheme(R.style.CustomConfirmDialog)
                 .setView(R.layout.layout_dialog_confirm)
-                //.setCancelable(false)
-                //.setDimAmount(0.2f)
-                //.setGravity(Gravity.BOTTOM)
-                //.setWindowWidthAmount(0.8f)
+                .setOnBindViewListener(new DialogViewInterface.OnBindViewListener() {
+                    @Override
+                    public void bindView(BindViewHolder viewHolder) {
+                        viewHolder.setText(R.id.tv_dialog_confirm_title, title)
+                                .setText(R.id.tv_dialog_confirm_message, msg);
+                    }
+                })
+                .addViewOnClickListener(R.id.tv_dialog_confirm_positive, R.id.tv_dialog_confirm_negative)
+                .setOnViewClickListener(new DialogViewInterface.OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, CommonDialog dialog) {
+                        switch (view.getId()) {
+                            case R.id.tv_dialog_confirm_positive:
+                                ToastUtil.showShort(context, "BUTTON_POSITIVE");
+                                dialog.dismiss();
+                                break;
+                            case R.id.tv_dialog_confirm_negative:
+                                ToastUtil.showShort(context, "BUTTON_NEGATIVE");
+                                dialog.dismiss();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setCancelable(false)
+                .setDimAmount(0.2f)
+                .setGravity(Gravity.CENTER)
+                .setWindowWidthAmount(0.8f)
                 .setTag("xxxxxx")
                 .create();
 
