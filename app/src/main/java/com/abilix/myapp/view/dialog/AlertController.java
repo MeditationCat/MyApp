@@ -32,7 +32,6 @@ class AlertController implements Parcelable, Serializable {
     private DialogViewInterface.OnBindViewListener mOnBindViewListener;
     private DialogViewInterface.OnViewClickListener mOnViewClickListener;
 
-    private DialogInterface.OnCancelListener mOnCancelListener;
     private DialogInterface.OnDismissListener mOnDismissListener;
 
     protected AlertController() {
@@ -144,10 +143,6 @@ class AlertController implements Parcelable, Serializable {
         return mOnViewClickListener;
     }
 
-    public DialogInterface.OnCancelListener getOnCancelListener() {
-        return mOnCancelListener;
-    }
-
     public DialogInterface.OnDismissListener getOnDismissListener() {
         return mOnDismissListener;
     }
@@ -201,9 +196,6 @@ class AlertController implements Parcelable, Serializable {
             }
             if (mOnViewClickListener != null) {
                 dialog.mOnViewClickListener = mOnViewClickListener;
-            }
-            if (mOnCancelListener != null) {
-                dialog.mOnCancelListener = mOnCancelListener;
             }
             if (mOnDismissListener != null) {
                 dialog.mOnDismissListener = mOnDismissListener;

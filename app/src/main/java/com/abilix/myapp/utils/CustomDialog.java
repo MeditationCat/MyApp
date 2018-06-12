@@ -15,27 +15,14 @@
 
 package com.abilix.myapp.utils;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AlertDialog;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.abilix.myapp.R;
-import com.abilix.myapp.base.BaseDialogFragment;
 import com.abilix.myapp.view.dialog.BindViewHolder;
 import com.abilix.myapp.view.dialog.CommonDialog;
 import com.abilix.myapp.view.dialog.DialogViewInterface;
-import com.orhanobut.logger.Logger;
-
-import butterknife.BindView;
 
 public class CustomDialog {
 
@@ -46,7 +33,7 @@ public class CustomDialog {
     public static void showConfirmDialog(final FragmentActivity context, final String title, final String msg) {
         CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
         CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
-                .setTheme(R.style.CustomConfirmDialog)
+                .setTheme(R.style.CustomDialog)
                 .setView(R.layout.layout_dialog_confirm)
                 .setOnBindViewListener(new DialogViewInterface.OnBindViewListener() {
                     @Override
@@ -61,11 +48,11 @@ public class CustomDialog {
                     public void onViewClick(BindViewHolder viewHolder, View view, CommonDialog dialog) {
                         switch (view.getId()) {
                             case R.id.tv_dialog_confirm_positive:
-                                ToastUtil.showShort(context, "BUTTON_POSITIVE");
+                                ToastUtil.showShort(context.getApplicationContext(), "BUTTON_POSITIVE");
                                 dialog.dismiss();
                                 break;
                             case R.id.tv_dialog_confirm_negative:
-                                ToastUtil.showShort(context, "BUTTON_NEGATIVE");
+                                ToastUtil.showShort(context.getApplicationContext(), "BUTTON_NEGATIVE");
                                 dialog.dismiss();
                                 break;
                             default:
@@ -81,35 +68,5 @@ public class CustomDialog {
                 .create();
 
         commonDialog.show();
-
-
-        /*AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-
-        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Logger.d("setDialogButtonListener: onClick()----> " + which);
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        ToastUtil.showShort(context, "BUTTON_POSITIVE");
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        ToastUtil.showShort(context, "BUTTON_NEGATIVE");
-                        break;
-                    case DialogInterface.BUTTON_NEUTRAL:
-                        ToastUtil.showShort(context, "BUTTON_NEUTRAL");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-        alertBuilder.setView(R.layout.layout_dialog_confirm)
-                .setCancelable(false)
-                .setTitle("提示")
-                .setMessage("测试信息")
-                .setPositiveButton("确认", onClickListener)
-                .setNegativeButton("取消", onClickListener).show();
-*/
     }
 }

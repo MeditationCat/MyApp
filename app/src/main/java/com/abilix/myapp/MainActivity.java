@@ -63,26 +63,8 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    int NUM_OF_CORES = Runtime.getRuntime().availableProcessors();
-    int KEEP_ALIVE_TIME = 1;
-    TimeUnit KEEP_ALIVE_TIME_UNIT = TimeUnit.SECONDS;
-    BlockingQueue<Runnable> taskQueue = new LinkedBlockingDeque<Runnable>();
-    ExecutorService executorService = new ThreadPoolExecutor(NUM_OF_CORES,
-            NUM_OF_CORES * 2,
-            KEEP_ALIVE_TIME,
-            KEEP_ALIVE_TIME_UNIT,
-            taskQueue,
-            new BackgroundThreadFactory(),
-            new DefaultRejectedExecutionHandler());
     @Override
     protected void initData() {
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-
 
     }
 

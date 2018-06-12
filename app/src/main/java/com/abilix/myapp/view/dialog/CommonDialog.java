@@ -16,7 +16,6 @@
 package com.abilix.myapp.view.dialog;
 
 import android.content.DialogInterface;
-import android.content.DialogInterface.*;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
@@ -57,18 +56,9 @@ public class CommonDialog extends BaseDialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        OnDismissListener dismissListener = mAlert.getOnDismissListener();
+        DialogInterface.OnDismissListener dismissListener = mAlert.getOnDismissListener();
         if (dismissListener != null) {
             dismissListener.onDismiss(dialog);
-        }
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-        super.onCancel(dialog);
-        OnCancelListener cancelListener = mAlert.getOnCancelListener();
-        if (cancelListener != null) {
-            cancelListener.onCancel(dialog);
         }
     }
 
@@ -213,12 +203,12 @@ public class CommonDialog extends BaseDialogFragment {
             return this;
         }
 
-        public Builder setOnCancelListener(OnCancelListener onCancelListener) {
+        public Builder setOnCancelListener(DialogInterface.OnCancelListener onCancelListener) {
             P.mOnCancelListener = onCancelListener;
             return this;
         }
 
-        public Builder setOnDismissListener(OnDismissListener onDismissListener) {
+        public Builder setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
             P.mOnDismissListener = onDismissListener;
             return this;
         }

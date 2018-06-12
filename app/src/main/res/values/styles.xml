@@ -6,7 +6,7 @@
     </style>
 
     <!-- 自定义的确认对话框 -->
-    <style name="CustomConfirmDialog" parent="android:style/Theme.Dialog">
+    <style name="CustomDialog" parent="android:style/Theme.Dialog">
         <!-- 设置窗口是否没显示标题 -->
         <item name="android:windowNoTitle">true</item>
         <!-- 设置窗口是否半透明 -->
