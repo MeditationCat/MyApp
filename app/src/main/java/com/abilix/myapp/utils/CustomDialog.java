@@ -30,11 +30,11 @@ public class CustomDialog {
     }
 
 
-    public static void showConfirmDialog(final FragmentActivity context, final String title, final String msg) {
+    public static void showConfirmCancelDialog(final FragmentActivity context, final String title, final String msg) {
         CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
         CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
                 .setTheme(R.style.CustomDialog)
-                .setView(R.layout.layout_dialog_confirm)
+                .setView(R.layout.dialog_confirm_cancel)
                 .setOnBindViewListener(new DialogViewInterface.OnBindViewListener() {
                     @Override
                     public void bindView(BindViewHolder viewHolder) {
@@ -68,5 +68,57 @@ public class CustomDialog {
                 .create();
 
         commonDialog.show();
+    }
+
+    public static void showConfirmDialog(final FragmentActivity context, final String title, final String msg) {
+        CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
+        CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
+                .setTheme(R.style.CustomDialog)
+                .setView(R.layout.dialog_confirm)
+                .setOnBindViewListener(new DialogViewInterface.OnBindViewListener() {
+                    @Override
+                    public void bindView(BindViewHolder viewHolder) {
+                        viewHolder.setText(R.id.tv_dialog_confirm_title, title)
+                                .setText(R.id.tv_dialog_confirm_message, msg);
+                    }
+                })
+                .addViewOnClickListener(R.id.tv_dialog_confirm_positive)
+                .setOnViewClickListener(new DialogViewInterface.OnViewClickListener() {
+                    @Override
+                    public void onViewClick(BindViewHolder viewHolder, View view, CommonDialog dialog) {
+                        switch (view.getId()) {
+                            case R.id.tv_dialog_confirm_positive:
+                                ToastUtil.showShort(context.getApplicationContext(), "BUTTON_POSITIVE");
+                                dialog.dismiss();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .setCancelable(false)
+                .setDimAmount(0.2f)
+                .setGravity(Gravity.CENTER)
+                .setWindowWidthAmount(0.8f)
+                .setTag("xxxxxx")
+                .create();
+
+        commonDialog.show();
+    }
+
+    public static CommonDialog showLoadingDialog(final FragmentActivity context) {
+        CommonDialog.Builder builder = new CommonDialog.Builder(context.getSupportFragmentManager());
+        CommonDialog commonDialog = builder.setStyle(CommonDialog.STYLE_NO_TITLE)
+                .setTheme(R.style.CustomDialog)
+                .setView(R.layout.dialog_loading)
+                .setCancelable(true)
+                .setDimAmount(0.2f)
+                .setGravity(Gravity.CENTER)
+                .setWindowWidthAmount(0.2f)
+                .setTag("xxxxxx")
+                .create();
+
+        commonDialog.show();
+        return commonDialog;
     }
 }

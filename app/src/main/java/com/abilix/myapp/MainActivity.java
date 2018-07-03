@@ -27,15 +27,12 @@ import com.abilix.myapp.api.observer.BaseObserver;
 import com.abilix.myapp.base.BaseActivity;
 import com.abilix.myapp.bean.douban.MovieInfo;
 import com.abilix.myapp.utils.CustomDialog;
+import com.abilix.myapp.view.dialog.CommonDialog;
 import com.orhanobut.logger.Logger;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
@@ -55,7 +52,13 @@ public class MainActivity extends BaseActivity {
     TextView textView;
 
     @BindView(R.id.btn_01)
-    Button button;
+    Button mBtnConfirmCancel;
+
+    @BindView(R.id.btn_02)
+    Button mBtnConfirm;
+
+    @BindView(R.id.btn_03)
+    Button mBtnLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,32 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void configViews() {
         textView.setText(stringFromJNI());
-        button.setOnClickListener(new View.OnClickListener() {
+        mBtnConfirmCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBApi.getInstance().getMovieTop250(0, 1)
+                        .subscribe(new BaseObserver<MovieInfo>(MainActivity.this) {
+                            @Override
+                            public void onNext(MovieInfo movieInfo) {
+                                Logger.d("onNext: %s",movieInfo.getTitle());
+                                textView.setText(movieInfo.getTitle());
+                                CustomDialog.showConfirmCancelDialog(MainActivity.this, movieInfo.getTitle(), movieInfo.getSubjects().get(0).getId());
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                Logger.d("onComplete:");
+                            }
+
+                            @Override
+                            protected void onError(ApiException e) {
+                                Logger.d("onError: %s", e.getMessage());
+                            }
+                        });
+
+            }
+        });
+        mBtnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DBApi.getInstance().getMovieTop250(0, 1)
@@ -96,7 +124,35 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        mBtnLoading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CommonDialog loadingDialog = CustomDialog.showLoadingDialog(MainActivity.this);
+                DBApi.getInstance().getMovieTop250(0, 1)
+                        .subscribe(new BaseObserver<MovieInfo>(MainActivity.this) {
+                            @Override
+                            public void onNext(MovieInfo movieInfo) {
+                                Logger.d("onNext: %s",movieInfo.getTitle());
+                                textView.setText(movieInfo.getTitle());
+                                //CustomDialog.showLoadingDialog(MainActivity.this);
+                                loadingDialog.dismiss();
+                            }
 
+                            @Override
+                            public void onComplete() {
+                                Logger.d("onComplete:");
+                                loadingDialog.dismiss();
+                            }
+
+                            @Override
+                            protected void onError(ApiException e) {
+                                Logger.d("onError: %s", e.getMessage());
+                                loadingDialog.dismiss();
+                            }
+                        });
+
+            }
+        });
     }
 
     @Override
