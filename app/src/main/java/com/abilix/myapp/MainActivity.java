@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.abilix.myapp.api.DBApi;
@@ -26,10 +27,16 @@ import com.abilix.myapp.api.exception.ApiException;
 import com.abilix.myapp.api.observer.BaseObserver;
 import com.abilix.myapp.base.BaseActivity;
 import com.abilix.myapp.bean.douban.MovieInfo;
+import com.abilix.myapp.socket.MulticastSocketListener;
+import com.abilix.myapp.socket.MulticastSocketUtil;
 import com.abilix.myapp.utils.CustomDialog;
+import com.abilix.myapp.utils.ToastUtil;
 import com.abilix.myapp.view.dialog.CommonDialog;
 import com.orhanobut.logger.Logger;
 
+import java.net.DatagramPacket;
+import java.net.MulticastSocket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -60,6 +67,14 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.btn_03)
     Button mBtnLoading;
 
+    @BindView(R.id.btn_04)
+    Button mBtnSend;
+
+    @BindView(R.id.et_packet)
+    EditText mEditText;
+
+    private MulticastSocketUtil mMulticastSocketUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,12 +83,39 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        mMulticastSocketUtil = new MulticastSocketUtil();
+        mMulticastSocketUtil.setMulticastSocketListener(new MulticastSocketListener() {
+            @Override
+            public void onReceived(MulticastSocket socket, DatagramPacket packet, byte[] data) {
+                final String msg = new String(data);
+                final String ip = packet.getAddress().getHostName();
+                Logger.d("onReceived: " + msg);
+                textView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView.append("\n" + ip + " says:" + msg);
+                    }
+                });
+            }
+        });
     }
 
     @Override
     protected void configViews() {
         textView.setText(stringFromJNI());
+
+        mBtnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = mEditText.getText().toString();
+                try {
+                    mMulticastSocketUtil.sendMulticastSocket(msg.getBytes(StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         mBtnConfirmCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
