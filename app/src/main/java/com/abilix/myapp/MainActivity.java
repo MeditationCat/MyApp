@@ -89,7 +89,9 @@ public class MainActivity extends BaseActivity {
             public void onReceived(MulticastSocket socket, DatagramPacket packet, byte[] data) {
                 final String msg = new String(data);
                 final String ip = packet.getAddress().getHostName();
+                String socketIp = packet.getSocketAddress() + "";
                 Logger.d("onReceived: " + msg);
+                Logger.d("onReceived: socketIp " + socketIp);
                 textView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -195,6 +197,15 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mMulticastSocketUtil != null) {
+            mMulticastSocketUtil.close();
+            mMulticastSocketUtil = null;
+        }
     }
 
     @Override
