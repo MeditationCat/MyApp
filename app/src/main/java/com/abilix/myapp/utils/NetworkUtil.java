@@ -28,6 +28,14 @@ public class NetworkUtil {
         return "";
     }
 
+    public static String getLocalIPAddress(Context context) {
+        WifiInfo wifiInfo = getWiFiInfo(context);
+        if (wifiInfo != null) {
+            return intIP2String(wifiInfo.getIpAddress());
+        }
+        return "";
+    }
+
     public static String getLocalIPAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
@@ -54,7 +62,7 @@ public class NetworkUtil {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress() && (inetAddress instanceof Inet4Address)) {
                         byte[] mac = intf.getHardwareAddress();
-                        return bytesToHexString(mac, false);
+                        return bytesToHexString(mac, false, ':');
                     }
                 }
             }
@@ -108,7 +116,7 @@ public class NetworkUtil {
             buf[c++] = digits[b & 0xf];
             buf[c++] = separator;
         }
-        return new String(buf);
+        return new String(buf, 0, buf.length - 1);
     }
 
 }

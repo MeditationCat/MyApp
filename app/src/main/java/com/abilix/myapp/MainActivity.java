@@ -17,6 +17,7 @@ package com.abilix.myapp;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,13 +30,12 @@ import com.abilix.myapp.base.BaseActivity;
 import com.abilix.myapp.bean.douban.MovieInfo;
 import com.abilix.myapp.socket.MulticastSocketListener;
 import com.abilix.myapp.socket.MulticastSocketUtil;
+import com.abilix.myapp.socket.UserInfo;
 import com.abilix.myapp.utils.CustomDialog;
-import com.abilix.myapp.utils.ToastUtil;
+import com.abilix.myapp.utils.NetworkUtil;
 import com.abilix.myapp.view.dialog.CommonDialog;
 import com.orhanobut.logger.Logger;
 
-import java.net.DatagramPacket;
-import java.net.MulticastSocket;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -70,6 +70,9 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.btn_04)
     Button mBtnSend;
 
+    @BindView(R.id.btn_05)
+    Button mBtnBack;
+
     @BindView(R.id.et_packet)
     EditText mEditText;
 
@@ -84,27 +87,43 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
         mMulticastSocketUtil = new MulticastSocketUtil();
+        //mMulticastSocketUtil.setNickName("K5-01");
         mMulticastSocketUtil.setMulticastSocketListener(new MulticastSocketListener() {
             @Override
-            public void onReceived(MulticastSocket socket, DatagramPacket packet, byte[] data) {
+            public void onStateChanged(UserInfo user, int onlineState) {
+                final String name = user.getName();
+                final String state = onlineState == 0x01 ? "login" : "logout";
+                Logger.d(user.toString() + state);
+                updateMsg(name + " " + state + "\n");
+            }
+
+            @Override
+            public void onReceived(UserInfo user, byte[] data) {
                 final String msg = new String(data);
-                final String ip = packet.getAddress().getHostName();
-                String socketIp = packet.getSocketAddress() + "";
+                final String name = user.getName();
                 Logger.d("onReceived: " + msg);
-                Logger.d("onReceived: socketIp " + socketIp);
-                textView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        textView.append("\n" + ip + " says:" + msg);
-                    }
-                });
+                updateMsg(name + ": " + msg + "\n");
+            }
+        });
+    }
+
+    private void updateMsg(final String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textView.append(msg);
+                int offset = textView.getLineCount() * textView.getLineHeight();
+                if (offset > textView.getHeight()) {
+                    textView.scrollTo(0, offset - textView.getHeight() + textView.getLineHeight());
+                }
             }
         });
     }
 
     @Override
     protected void configViews() {
-        textView.setText(stringFromJNI());
+        textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+        textView.setText(NetworkUtil.getLocalIPAddress() + "\n");
 
         mBtnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +137,12 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        mBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         mBtnConfirmCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,8 +225,8 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         if (mMulticastSocketUtil != null) {
             mMulticastSocketUtil.close();
             mMulticastSocketUtil = null;

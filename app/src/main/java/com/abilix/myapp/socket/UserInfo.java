@@ -11,7 +11,6 @@ public class UserInfo {
     private SocketAddress address;
 
     private static final int CHECK_TIMEOUT = 3 * 1000; //ms
-    private boolean online;
     private long lastCheckTime;
     private long checkTime;
 
@@ -24,6 +23,10 @@ public class UserInfo {
         this.ip = ip;
         this.port = port;
         this.address = address;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -65,5 +68,15 @@ public class UserInfo {
     @Override
     public int hashCode() {
         return address.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "name='" + name + '\'' +
+                ", ip='" + ip + '\'' +
+                ", port=" + port +
+                ", address=" + address +
+                '}';
     }
 }

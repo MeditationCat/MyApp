@@ -5,21 +5,25 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
+import com.abilix.myapp.utils.NetworkUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MulticastSocketUtil {
+
+    public static final int MEMBER_STATE_ADDED = 0x01;
+    public static final int MEMBER_STATE_DELETED = 0x02;
 
     private static final String mGroupIP = "224.1.1.1";
     private static final int mPort = 8000;
@@ -27,18 +31,18 @@ public class MulticastSocketUtil {
     private MulticastSocket mMulticastSocket;
     private InetAddress mGroupAddress = null;
     private MulticastSocketListener mMulticastSocketListener = null;
-    private String mNickName = "";
+    private String mNickName;
 
     private HandlerThread mHandlerThread;
     private ServerHandler mHandler;
 
     private ReceiveThread mReceiveThread;
 
-    private static final long mHeartbeatDelay = 0; //ms
-    private static final long mHeartbeatPeriod = 3 * 1000; //ms
+    private static final long mHeartbeatDelay = 200; //ms
+    private static final long mHeartbeatPeriod = 1000; //ms
     private Timer mHeartbeatTimer;
 
-    private List<UserInfo> mGroupMembers = new ArrayList<>();
+    private Map<String, UserInfo> mGroupMembers = new HashMap<>();
 
     public MulticastSocketUtil() {
         //初始化MulticastSocket
@@ -62,6 +66,7 @@ public class MulticastSocketUtil {
         //初始化接收线程
         mReceiveThread = new ReceiveThread("ReceiveThread");
         mReceiveThread.start();
+        mNickName = NetworkUtil.getLocalIPAddress();
         //初始化心跳Timer
         mHeartbeatTimer = new Timer("Heartbeat");
         mHeartbeatTimer.schedule(new TimerTask() {
@@ -70,7 +75,7 @@ public class MulticastSocketUtil {
                 String msg = mNickName + "#" + "isAlive";
                 sendMulticastSocket(msg.getBytes());
             }
-        }, 0, mHeartbeatPeriod);
+        }, mHeartbeatDelay, mHeartbeatPeriod);
     }
 
     public void setNickName(String name) {
@@ -82,14 +87,20 @@ public class MulticastSocketUtil {
     }
 
     public synchronized void sendMulticastSocket(byte[] data) {
+        DatagramPacket packet = new DatagramPacket(data, data.length, mGroupAddress, mPort);
         if (mHandler != null) {
-            mHandler.obtainMessage(MSG_SEND_DATA, data).sendToTarget();
+            mHandler.obtainMessage(MSG_SEND_DATA, packet).sendToTarget();
         }
     }
 
-    public synchronized void sendMulticastSocket(String name, byte[] data) {
-        if (mHandler != null) {
-            mHandler.obtainMessage(MSG_SEND_DATA, data).sendToTarget();
+    public synchronized void sendSingleSocket(UserInfo toUser, byte[] data) {
+        try {
+            DatagramPacket packet = new DatagramPacket(data, data.length, toUser.getAddress());
+            if (mHandler != null) {
+                mHandler.obtainMessage(MSG_SEND_DATA, packet).sendToTarget();
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
     }
 
@@ -114,6 +125,10 @@ public class MulticastSocketUtil {
         if (mMulticastSocket != null) {
             mMulticastSocket.close();
             mMulticastSocket = null;
+        }
+        if (mGroupMembers != null) {
+            mGroupMembers.clear();
+            mGroupMembers = null;
         }
     }
 
@@ -143,29 +158,54 @@ public class MulticastSocketUtil {
                     while (mRunning) {
                         packet.setData(data, 0, data.length);
                         mMulticastSocket.receive(packet);
+                        String fromIp = packet.getAddress().getHostAddress();
                         String msg = new String(packet.getData(), packet.getOffset(),packet.getLength(), Charset.defaultCharset());
+                        UserInfo fromUser;
                         if (msg.contains("#")) {
                             String[] userMsg = msg.split("#");
-                            UserInfo user = new UserInfo(userMsg[0], packet);
-                            if (!mGroupMembers.contains(user)) {
-                                mGroupMembers.add(user);
-                            }
-                            long checkTime = System.currentTimeMillis();
-                            for (UserInfo userInfo : mGroupMembers) {
-                                userInfo.setCheckTime(checkTime);
-                                if (userInfo.equals(user)) {
-                                    userInfo.resetLastCheckTime();
+                            if (mGroupMembers.containsKey(fromIp)) {
+                                fromUser = mGroupMembers.get(fromIp);
+                                fromUser.setName(userMsg[0]);
+                            } else {
+                                fromUser = new UserInfo(userMsg[0], packet);
+                                mGroupMembers.put(fromIp, fromUser);
+                                if (mMulticastSocketListener != null) {
+                                    mMulticastSocketListener.onStateChanged(fromUser, MEMBER_STATE_ADDED);
                                 }
-                                if (!userInfo.isOnline()) {
-                                    mGroupMembers.remove(userInfo);
+                            }
+                            //遍历所有组成员,更新状态
+                            long checkTime = System.currentTimeMillis();
+                            Iterator<Map.Entry<String, UserInfo>> iterator = mGroupMembers.entrySet().iterator();
+                            while (iterator.hasNext()) {
+                                Map.Entry<String, UserInfo> entry = iterator.next();
+                                String key = entry.getKey();
+                                UserInfo user = entry.getValue();
+                                user.setCheckTime(checkTime);
+                                if (user.equals(fromUser)) {
+                                    user.setName(fromUser.getName());
+                                    user.resetLastCheckTime();
+                                }
+                                mGroupMembers.put(key, user);
+                                //删除不在线成员
+                                if (!user.isOnline()) {
+                                    iterator.remove();
+                                    if (mMulticastSocketListener != null) {
+                                        mMulticastSocketListener.onStateChanged(user, MEMBER_STATE_DELETED);
+                                    }
                                 }
                             }
                             continue;
                         }
+                        if (mGroupMembers.containsKey(fromIp)) {
+                            fromUser = mGroupMembers.get(fromIp);
+                        } else {
+                            continue;
+                        }
+
                         if (mMulticastSocketListener != null) {
                             byte[] received = new byte[packet.getLength()];
                             System.arraycopy(data, packet.getOffset(), received, 0, packet.getLength());
-                            mMulticastSocketListener.onReceived(mMulticastSocket, packet, received);
+                            mMulticastSocketListener.onReceived(fromUser, received);
                         }
                     }
                 } catch (IOException e) {
@@ -191,8 +231,7 @@ public class MulticastSocketUtil {
             Logger.d("handleMessage: " + msg.what);
             switch (msg.what) {
                 case MSG_SEND_DATA:
-                    byte[] data = (byte[]) msg.obj;
-                    DatagramPacket packet = new DatagramPacket(data, data.length, mGroupAddress, mPort);
+                    DatagramPacket packet = (DatagramPacket) msg.obj;
                     try {
                         if (mMulticastSocket != null) {
                             mMulticastSocket.send(packet);
